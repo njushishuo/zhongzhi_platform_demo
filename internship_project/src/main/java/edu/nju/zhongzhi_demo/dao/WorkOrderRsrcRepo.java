@@ -1,7 +1,6 @@
 package edu.nju.zhongzhi_demo.dao;
 
 import edu.nju.zhongzhi_demo.entity.WorkOrderRsrc;
-import edu.nju.zhongzhi_demo.enums.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
