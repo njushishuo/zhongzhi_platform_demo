@@ -11,9 +11,10 @@ import java.util.Objects;
 @Table(name = "work_order_rsrc", schema = "cloud_resrc_platform", catalog = "")
 public class WorkOrderRsrc {
     private int id;
+    private int appId;
     private int workOrderId;
     private int resrcId;
-    private ResourceType resrcResourceType;
+    private ResourceType resrcType;
     private ResourceStatus resrcStatus;
     private Integer reviewDeptId;
     private Timestamp processTime;
@@ -38,6 +39,17 @@ public class WorkOrderRsrc {
         this.workOrderId = workOrderId;
     }
 
+
+    @Basic
+    @Column(name = "app_id")
+    public int getAppId() {
+        return this.appId;
+    }
+
+    public void setAppId(int appId) {
+        this.appId = appId;
+    }
+
     @Basic
     @Column(name = "resrc_id")
     public int getResrcId() {
@@ -50,12 +62,12 @@ public class WorkOrderRsrc {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "resrc_type")
-    public ResourceType getResrcResourceType() {
-        return resrcResourceType;
+    public ResourceType getResrcType() {
+        return resrcType;
     }
 
-    public void setResrcResourceType(ResourceType resrcResourceType) {
-        this.resrcResourceType = resrcResourceType;
+    public void setResrcType(ResourceType resrcType) {
+        this.resrcType = resrcType;
     }
 
     @Enumerated(EnumType.STRING)
@@ -96,7 +108,7 @@ public class WorkOrderRsrc {
         return id == that.id &&
                 workOrderId == that.workOrderId &&
                 resrcId == that.resrcId &&
-                Objects.equals(resrcResourceType, that.resrcResourceType) &&
+                Objects.equals(resrcType, that.resrcType) &&
                 Objects.equals(resrcStatus, that.resrcStatus) &&
                 Objects.equals(reviewDeptId, that.reviewDeptId) &&
                 Objects.equals(processTime, that.processTime);
@@ -105,6 +117,6 @@ public class WorkOrderRsrc {
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, workOrderId, resrcId, resrcResourceType, resrcStatus, reviewDeptId, processTime);
+        return Objects.hash(id, workOrderId, resrcId, resrcType, resrcStatus, reviewDeptId, processTime);
     }
 }
