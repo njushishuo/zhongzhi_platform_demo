@@ -1,7 +1,6 @@
 package edu.nju.zhongzhi_demo.service;
 
 import edu.nju.zhongzhi_demo.dao.*;
-import edu.nju.zhongzhi_demo.entity.ResrcCmpt;
 import edu.nju.zhongzhi_demo.enums.ResourceStatus;
 import edu.nju.zhongzhi_demo.enums.ResourceType;
 import edu.nju.zhongzhi_demo.model.wrapper.ResourceInfo;
@@ -33,9 +32,22 @@ public class ResourceService {
      * @return
      */
     public ResourceInfo getResourceInfoByAppId(int appId){
-        ResourceInfo resourceInfo = new ResourceInfo();
-        List<Object[]> resourceIdAndTypeList = this.workOrderRsrcRepo.findResourceIdAndTypeListBy
+        List<Object[]> resourceIdAndTypeList = this.workOrderRsrcRepo.findResourceIdAndTypeListByAppIdAndResrcStatus
                 (appId, ResourceStatus.approved.toString());
+
+        return this.getResourceInfoByResourceIdAndTypeList(resourceIdAndTypeList);
+    }
+
+    public ResourceInfo getResourceInfoByWorkOrderId(int workOrderId){
+        List<Object[]> resourceIdAndTypeList = this.workOrderRsrcRepo.findResourceIdAndTypeListByWOId
+                (workOrderId);
+        return this.getResourceInfoByResourceIdAndTypeList(resourceIdAndTypeList);
+    }
+
+
+
+    private ResourceInfo getResourceInfoByResourceIdAndTypeList(List<Object []> resourceIdAndTypeList){
+        ResourceInfo resourceInfo = new ResourceInfo();
 
         List<Integer> cmptIds = new ArrayList<>();
         List<Integer> apiIds = new ArrayList<>();
@@ -67,7 +79,9 @@ public class ResourceService {
         if(!apiIds.isEmpty()){
             resourceInfo.resrcApiList.addAll(this.resrcApiRepo.getResrcApiByIdIn(apiIds));
         }
+
         return resourceInfo;
     }
+
 
 }

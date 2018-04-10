@@ -14,10 +14,6 @@ public class AccountService {
 
     @Autowired
     AccountRepo accountRepo;
-    @Autowired
-    HttpSession session;
-
-    private static final String AUTH_KEY = "auth";
 
     public User getById(int id){
 
@@ -28,26 +24,6 @@ public class AccountService {
     public User getByUsername(String username){
 
         return this.accountRepo.getByUsername(username);
-
-    }
-
-    private static HttpSession getSession() {
-        ServletRequestAttributes attributes =
-                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        return attributes.getRequest().getSession();
-    }
-
-    public void setAuth(User user){
-
-        HttpSession session = getSession();
-        session.setAttribute(AUTH_KEY,user);
-
-    }
-
-    public void removeAuth(){
-
-        HttpSession session = getSession();
-        session.removeAttribute(AUTH_KEY);
 
     }
 
