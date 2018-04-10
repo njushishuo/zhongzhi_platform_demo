@@ -4,10 +4,6 @@ import edu.nju.zhongzhi_demo.dao.AccountRepo;
 import edu.nju.zhongzhi_demo.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpSession;
 
 @Service
 public class AccountService {

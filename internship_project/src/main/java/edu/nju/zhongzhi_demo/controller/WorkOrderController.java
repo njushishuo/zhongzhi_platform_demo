@@ -3,6 +3,7 @@ package edu.nju.zhongzhi_demo.controller;
 import edu.nju.zhongzhi_demo.dao.AppRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRsrcRepo;
+import edu.nju.zhongzhi_demo.entity.User;
 import edu.nju.zhongzhi_demo.entity.WorkOrder;
 import edu.nju.zhongzhi_demo.entity.WorkOrderRsrc;
 import edu.nju.zhongzhi_demo.enums.ResourceStatus;
@@ -33,9 +34,11 @@ public class WorkOrderController {
     @Autowired
     WorkOrderService workOrderService;
     @Autowired
-    AuthService authService;
+    AccountService accountService;
     @Autowired
     ResourceService resourceService;
+    @Autowired
+    AuthService authService;
 
     @PostMapping
     @Transactional
@@ -64,7 +67,6 @@ public class WorkOrderController {
                 workOrderRsrc.setResrcId(resourceId);
                 workOrderRsrc.setResrcType(ResourceType.compute);
                 workOrderRsrc.setReviewDeptId(auditDeptId);
-                workOrderRsrc.setResrcStatus(ResourceStatus.wait_review);
                 this.workOrderRsrcRepo.save(workOrderRsrc);
             }
         }
@@ -78,7 +80,6 @@ public class WorkOrderController {
                 workOrderRsrc.setResrcId(resourceId);
                 workOrderRsrc.setResrcType(ResourceType.data);
                 workOrderRsrc.setReviewDeptId(auditDeptId);
-                workOrderRsrc.setResrcStatus(ResourceStatus.wait_review);
                 this.workOrderRsrcRepo.save(workOrderRsrc);
             }
         }
@@ -92,12 +93,9 @@ public class WorkOrderController {
                 workOrderRsrc.setResrcId(resourceId);
                 workOrderRsrc.setResrcType(ResourceType.api);
                 workOrderRsrc.setReviewDeptId(auditDeptId);
-                workOrderRsrc.setResrcStatus(ResourceStatus.wait_review);
                 this.workOrderRsrcRepo.save(workOrderRsrc);
             }
         }
-
-
 
     }
 
@@ -111,7 +109,7 @@ public class WorkOrderController {
 
         WorkOrder workOrder = this.workOrderRepo.getOne(id);
         WorkOrderDetailVo vo = new WorkOrderDetailVo();
-        String userName = this.authService.getAuthUser().getUsername();
+        String userName = this.accountService.getById(workOrder.getApplicantId()).getUsername();
         vo.id = id;
         vo.appName = this.appRepo.getOne(workOrder.getAppId()).getName();
         vo.userName = userName;
@@ -120,4 +118,21 @@ public class WorkOrderController {
         vo.resourceInfo = this.resourceService.getResourceInfoByWorkOrderId(id);
         return vo;
     }
+
+
+    @GetMapping("/audit")
+    public List<WorkOrderVo> getWorkOrderListForAudit(@RequestBody String status){
+        User user = this.authService.getAuthUser();
+        if(status.equals(WorkOrderStatus.wait_review.toString())){
+            return this.workOrderService.getUnprocessedWorkOrdersByAuditDeptIdAndRole(user.getDeptId(),user.getRole());
+        }
+
+        if(status.equals(WorkOrderStatus.processed.toString())){
+            return this.workOrderService.getProcessedWorkOrdersByAuditDeptIdAndRole(user.getDeptId(),user.getRole());
+        }
+
+        return null;
+    }
+
+
 }

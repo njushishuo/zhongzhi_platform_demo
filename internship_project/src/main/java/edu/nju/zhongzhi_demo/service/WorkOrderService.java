@@ -2,7 +2,11 @@ package edu.nju.zhongzhi_demo.service;
 
 import edu.nju.zhongzhi_demo.dao.AppRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRepo;
+import edu.nju.zhongzhi_demo.dao.WorkOrderRsrcRepo;
 import edu.nju.zhongzhi_demo.entity.WorkOrder;
+import edu.nju.zhongzhi_demo.enums.ResourceStatus;
+import edu.nju.zhongzhi_demo.enums.Role;
+import edu.nju.zhongzhi_demo.model.vo.WorkOrderDetailVo;
 import edu.nju.zhongzhi_demo.model.vo.WorkOrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +21,8 @@ public class WorkOrderService {
 
     @Autowired
     WorkOrderRepo workOrderRepo;
+    @Autowired
+    WorkOrderRsrcRepo workOrderRsrcRepo;
     @Autowired
     AppRepo appRepo;
     @Autowired
@@ -46,6 +52,65 @@ public class WorkOrderService {
         }
 
         return result;
+    }
+
+    public List<WorkOrderVo> getUnprocessedWorkOrdersByAuditDeptIdAndRole
+            (int deptId , Role role ){
+
+        List<Integer> workOrderIds = new ArrayList<>();
+        if(role == Role.cmpt_conductor){
+            workOrderIds = this.workOrderRsrcRepo.getUnprocessedCmptWorkOrdersByAuditDeptId(deptId);
+        }else if(role == Role.data_conductor){
+            workOrderIds = this.workOrderRsrcRepo.getUnprocessedDataWorkOrdersByAuditDeptId(deptId);
+        }else{
+            throw new RuntimeException("role error");
+        }
+
+        if(workOrderIds != null && !workOrderIds.isEmpty()){
+            List<WorkOrderVo> result = new ArrayList<>();
+            for(Integer workOrderId : workOrderIds){
+                WorkOrderVo vo = this.transform(this.workOrderRepo.getOne(workOrderId));
+                result.add(vo);
+            }
+            return result;
+        }
+
+        return null;
+    }
+
+    public List<WorkOrderVo> getProcessedWorkOrdersByAuditDeptIdAndRole
+            (int deptId , Role role ){
+        List<Integer> workOrderIds = new ArrayList<>();
+        if(role == Role.cmpt_conductor){
+            workOrderIds = this.workOrderRsrcRepo.getProcessedCmptWorkOrdersByAuditDeptId(deptId);
+        }else if(role == Role.data_conductor){
+            workOrderIds = this.workOrderRsrcRepo.getProcessedDataWorkOrdersByAuditDeptId(deptId);
+        }else{
+            throw new RuntimeException("role error");
+        }
+
+        if(workOrderIds != null && !workOrderIds.isEmpty()){
+            List<WorkOrderVo> result = new ArrayList<>();
+            for(Integer workOrderId : workOrderIds){
+                WorkOrderVo vo = this.transform(this.workOrderRepo.getOne(workOrderId));
+                result.add(vo);
+            }
+            return result;
+        }
+
+        return null;
+    }
+
+    private WorkOrderVo transform(WorkOrder workOrder){
+
+        WorkOrderVo vo = new WorkOrderVo();
+        String userName = this.accountService.getById(workOrder.getApplicantId()).getUsername();
+        vo.id = workOrder.getId();
+        vo.appName = this.appRepo.getOne(workOrder.getAppId()).getName();
+        vo.userName = userName;
+        vo.status = workOrder.getStatus().toString();
+        vo.reviewStatus = workOrder.getStatus().toString();
+        return vo;
     }
 
 }
