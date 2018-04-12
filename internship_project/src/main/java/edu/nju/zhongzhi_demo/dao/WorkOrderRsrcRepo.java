@@ -1,6 +1,6 @@
 package edu.nju.zhongzhi_demo.dao;
 
-import edu.nju.zhongzhi_demo.entity.WorkOrderRsrc;
+import edu.nju.zhongzhi_demo.entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -27,4 +27,13 @@ public interface WorkOrderRsrcRepo extends JpaRepository<WorkOrderRsrc,Integer> 
 
     @Query("select distinct workOrderId from WorkOrderRsrc wor where reviewDeptId = ?1 and (resrcType = 'data' or resrcType = 'api')and resrcStatus is not null ")
     List<Integer> getProcessedDataWorkOrdersByAuditDeptId(int deptId);
+
+    @Query("select r from ResrcCmpt r where id in  (select resrcId from WorkOrderRsrc wor where workOrderId = ?1 and resrcType = 'compute') ")
+    List<ResrcCmpt> getCmptResourcesByWOId(int workOrderId);
+
+    @Query("select r from ResrcData r where id in  (select resrcId from WorkOrderRsrc wor where workOrderId = ?1 and resrcType = 'data') ")
+    List<ResrcData> getDataResourcesByWOId(int workOrderId);
+
+    @Query("select r from ResrcApi r where id in  (select resrcId from WorkOrderRsrc wor where workOrderId = ?1 and resrcType = 'api') ")
+    List<ResrcApi> findApiResourcesByWOId(int workOrderId);
 }

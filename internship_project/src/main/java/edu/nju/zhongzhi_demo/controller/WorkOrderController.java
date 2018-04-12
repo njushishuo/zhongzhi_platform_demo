@@ -98,9 +98,9 @@ public class WorkOrderController {
 
     }
 
-    @GetMapping("/user/{id}")
-    public List<WorkOrderVo> getWorkOrderByUserId(@PathVariable int id){
-        return  this.workOrderService.getWorkOrderListByUserId(id);
+    @GetMapping()
+    public List<WorkOrderVo> getWorkOrderByUserId(){
+        return  this.workOrderService.getWorkOrderListByUserId(this.authService.getAuthUser().getId());
     }
 
     @GetMapping("/{id}")
@@ -131,6 +131,18 @@ public class WorkOrderController {
         }
 
         return null;
+    }
+
+
+    @GetMapping("/{id}/audit")
+    public WorkOrderDetailVo getWorkOrderDetailForAuditor(@PathVariable int id){
+        User user = this.authService.getAuthUser();
+        WorkOrder workOrder = this.workOrderRepo.getOne(id);
+        return this.workOrderService.getWorkOrderDetailForAuditor(user,workOrder);
+    }
+
+    public String reviewOrder(){
+        return "";
     }
 
 

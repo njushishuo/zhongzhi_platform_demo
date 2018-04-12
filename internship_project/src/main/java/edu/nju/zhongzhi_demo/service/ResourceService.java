@@ -1,8 +1,13 @@
 package edu.nju.zhongzhi_demo.service;
 
 import edu.nju.zhongzhi_demo.dao.*;
+import edu.nju.zhongzhi_demo.entity.Resource;
+import edu.nju.zhongzhi_demo.entity.ResrcApi;
+import edu.nju.zhongzhi_demo.entity.ResrcCmpt;
+import edu.nju.zhongzhi_demo.entity.ResrcData;
 import edu.nju.zhongzhi_demo.enums.ResourceStatus;
 import edu.nju.zhongzhi_demo.enums.ResourceType;
+import edu.nju.zhongzhi_demo.enums.Role;
 import edu.nju.zhongzhi_demo.model.wrapper.ResourceInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +47,26 @@ public class ResourceService {
         List<Object[]> resourceIdAndTypeList = this.workOrderRsrcRepo.findResourceIdAndTypeListByWOId
                 (workOrderId);
         return this.getResourceInfoByResourceIdAndTypeList(resourceIdAndTypeList);
+    }
+
+    public ResourceInfo getResourceInfoByWorkOrderIdAndRole(int workOrderId , Role role){
+        if(role == Role.cmpt_conductor){
+            List<ResrcCmpt> resourceList = this.workOrderRsrcRepo.getCmptResourcesByWOId(workOrderId);
+            ResourceInfo resourceInfo = new ResourceInfo();
+            resourceInfo.resrcCmptList = resourceList;
+            return resourceInfo;
+        }else if(role == Role.data_conductor){
+
+            List<ResrcData> resourceDataList = this.workOrderRsrcRepo.getDataResourcesByWOId(workOrderId);
+            List<ResrcApi> resourceApiList = this.workOrderRsrcRepo.getApiResourcesByWOId(workOrderId);
+            ResourceInfo resourceInfo = new ResourceInfo();
+            resourceInfo.resrcDataList = resourceDataList;
+            resourceInfo.resrcApiList = resourceApiList;
+            return resourceInfo;
+
+        }else{
+            throw new RuntimeException("Role Error");
+        }
     }
 
 

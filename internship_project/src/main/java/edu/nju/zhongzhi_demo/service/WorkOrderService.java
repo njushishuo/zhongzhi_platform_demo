@@ -3,8 +3,10 @@ package edu.nju.zhongzhi_demo.service;
 import edu.nju.zhongzhi_demo.dao.AppRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRsrcRepo;
+import edu.nju.zhongzhi_demo.entity.User;
 import edu.nju.zhongzhi_demo.entity.WorkOrder;
 import edu.nju.zhongzhi_demo.enums.Role;
+import edu.nju.zhongzhi_demo.model.vo.WorkOrderDetailVo;
 import edu.nju.zhongzhi_demo.model.vo.WorkOrderVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,9 @@ public class WorkOrderService {
     AppRepo appRepo;
     @Autowired
     AccountService accountService;
+    @Autowired
+    ResourceService resourceService;
+
     public List<WorkOrderVo> getWorkOrderListByUserId(int userId){
         List<WorkOrder> workOrderList = this.workOrderRepo.getByApplicantId(userId);
         if(workOrderList == null || workOrderList.isEmpty()){
@@ -98,6 +103,15 @@ public class WorkOrderService {
 
         return null;
     }
+
+
+    public WorkOrderDetailVo getWorkOrderDetailForAuditor(User auditor , WorkOrder workOrder){
+        WorkOrderVo workOrderVo = this.transform(workOrder);
+        WorkOrderDetailVo detailVo = new WorkOrderDetailVo(workOrderVo);
+        detailVo.resourceInfo = this.resourceService.getResourceInfoByWorkOrderIdAndRole(workOrder.getId(),auditor.getRole());
+        return detailVo;
+    }
+
 
     private WorkOrderVo transform(WorkOrder workOrder){
 
