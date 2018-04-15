@@ -1,9 +1,9 @@
 <template>
   <div class="verify-box-card">
-    <h1 class="verify-title">TSS-Gamma</h1>
+    <h1 class="verify-title">众智平台</h1>
     <el-card>
       <div>
-        <el-form size="small" class="register-verify-form" label-position="right" label-width="70px" :model="form">
+        <el-form size="medium" class="register-verify-form" label-position="right" label-width="70px" :model="form">
 
           <el-form-item label="用户名称">
             <el-input v-model="form.name"></el-input>
@@ -69,7 +69,7 @@
 </style>
 
 <script>
-  import ResourceVerify from '@/services/verify'
+  import AuthService from '@/services/authService'
   import { Message } from 'element-ui'
   export default {
     name: 'Register',

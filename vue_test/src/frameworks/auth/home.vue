@@ -1,22 +1,18 @@
 <template>
   <div class="verify-box-card">
-    <h1 class="verify-title">TSS-Gamma</h1>
+    <h1 class="verify-title">众智平台</h1>
     <el-card>
       <div>
-        <el-form size="small" class="login-verify-form" label-position="top" label-width="60px" :model="form">
-          <el-form-item>
-            <span>邮箱</span>
+        <el-form size="medium" class="login-verify-form" label-position="left" label-width="60px" :model="form">
+          <el-form-item label="邮箱">
             <el-input v-model="form.email"></el-input>
           </el-form-item>
-          <el-form-item>
-            <span>密码</span>
+          <el-form-item label="密码">
             <el-input type="password" v-model="form.password"></el-input>
           </el-form-item>
-          <el-form-item>
-            <el-button @click="login" class="verify-btn" type="success">
-              登录
-            </el-button>
-          </el-form-item>
+          <el-button @click="login" class="verify-btn" type="success">
+            登录
+          </el-button>
           <router-link class="register-link" :to="{name: 'Register'}">还没有账号?创建一个</router-link>
         </el-form>
       </div>
@@ -75,7 +71,7 @@
 </style>
 
 <script>
-  import ResourceVerify from '@/services/verify'
+  import AuthService from '@/services/authService'
   import { Message } from 'element-ui'
   export default {
     name: 'VerifyHome',
@@ -94,14 +90,14 @@
           email: this.form.email,
           password: this.form.password
         }
-        ResourceVerify.login(params).then((res) => {
+        AuthService.login(params).then((res) => {
           console.log('success')
           let user = res.data
           this.$cookie.set('user', user)
           if (user.role === 'isv') {
-            this.$router.push({name: 'IsvHome', params: {user_id: user.id}})
+            this.$router.push({name: 'IsvAppList', params: {user_id: user.id}})
           } else {
-            this.$router.push({name: 'AuditorHome', params: {user_id: user.id}})
+            this.$router.push({name: 'AuditorOrderList', params: {user_id: user.id}})
           }
         }).catch((err) => {
           console.log('err')

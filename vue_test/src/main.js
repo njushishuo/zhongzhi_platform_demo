@@ -5,7 +5,7 @@ import ElementUI from 'element-ui'
 import VueCookie from 'vue-cookie'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/base.css'
-import util from './../static/utils'
+import util from './router/utils'
 import Axios from 'axios'
 
 Axios.defaults.baseURL = util.hostPort + '/'
