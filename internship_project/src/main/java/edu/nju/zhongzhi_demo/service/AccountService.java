@@ -17,9 +17,9 @@ public class AccountService {
 
     }
 
-    public User getByUsername(String username){
+    public User getByEmail(String email){
 
-        return this.accountRepo.getByUsername(username);
+        return this.accountRepo.getByEmail(email);
 
     }
 

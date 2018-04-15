@@ -2,8 +2,10 @@ package edu.nju.zhongzhi_demo.controller;
 
 import edu.nju.zhongzhi_demo.entity.User;
 import edu.nju.zhongzhi_demo.model.para.LoginPara;
+import edu.nju.zhongzhi_demo.model.vo.UserVo;
 import edu.nju.zhongzhi_demo.service.AccountService;
 import edu.nju.zhongzhi_demo.service.AuthService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,19 +19,19 @@ public class AuthController {
     @Autowired
     AuthService authService;
     @PostMapping("/login")
-    public String login(@RequestBody LoginPara loginPara){
+    public UserVo login(@RequestBody LoginPara loginPara){
 
-        System.out.println(loginPara.username);
-        User user = this.accountService.getByUsername(loginPara.username);
+        User user = this.accountService.getByEmail(loginPara.email);
         if(user == null){
-            return Config.UNKNOWN_USER;
+            throw new RuntimeException(Config.UNKNOWN_USER);
         }else{
 
             if (!loginPara.password.equals(user.getPassword()) ){
-                return Config.ERROR_PASSWORD;
+                throw new RuntimeException(Config.ERROR_PASSWORD);
             }else{
                 this.authService.setAuth(user);
-                return "success";
+                UserVo userVo = new UserVo(user);
+                return userVo;
             }
         }
 
