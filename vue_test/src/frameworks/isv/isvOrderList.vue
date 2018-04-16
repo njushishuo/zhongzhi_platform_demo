@@ -4,7 +4,7 @@
 
 <script>
     export default {
-        name: "isvOrderList"
+        name: "IsvOrderList"
     }
 </script>
 

@@ -4,7 +4,7 @@
 
 <script>
     export default {
-        name: "auditorOrderDetail"
+        name: "AuditorOrderDetail"
     }
 </script>
 
