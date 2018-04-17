@@ -24,6 +24,10 @@
   </v-container>
 </template>
 
+<style lang="stylus">
+  @import '../../stylus/main'
+</style>
+
 <script>
   import AuthService from '@/services/authService'
   export default {
@@ -43,19 +47,24 @@
           password: this.form.password
         }
         AuthService.login(params).then((res) => {
-          console.log('success')
           let user = res.data
-          this.$cookie.set('user', user)
+          this.$cookie.set('userId', user.id,{ expires: '30M' })
+          this.$cookie.set('username', user.username,{ expires: '30M' })
+          this.$cookie.set('userRole', user.role,{ expires: '30M' })
+          this.$cookie.set('userDeptId', user.deptId,{ expires: '30M' })
+          console.log(user)
           if (user.role === 'isv') {
             this.$router.push({name: 'IsvFrame', params: {user_id: user.id}})
           } else {
             this.$router.push({name: 'AuditorFrame', params: {user_id: user.id}})
           }
         }).catch((err) => {
-          console.log('err')
+          console.log(err)
           let errMsg = (err.response) ? err.response.data.message : '服务器连接出错'
         })
       }
-    }
+    },
+
   }
 </script>
+

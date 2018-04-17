@@ -5,10 +5,11 @@
       <v-list class="pa-0">
         <v-list-tile avatar tag="div">
           <v-list-tile-avatar>
-            <img src="/assets/img/avatar0.png">
+            <img src="../../assets/img/avatar0.png">
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title>{{user.username}}</v-list-tile-title>
+            <v-list-tile-title>{{username}}</v-list-tile-title>
+            <v-list-tile-title>{{role}}</v-list-tile-title>
           </v-list-tile-content>
           <v-spacer></v-spacer>
           <v-list-tile-action style="min-width:30px;">
@@ -30,7 +31,6 @@
             </v-btn>
           </v-list-tile-action>
         </v-list-tile>
-
       </v-list>
       <v-list>
         <v-list-tile v-for="item in items" :key="item.title" @click="clickMenu(item)" router>
@@ -80,84 +80,61 @@
       name: "IsvFrame",
       data () {
         return {
-          user:{
-            username:"ss14"
-          },
-          dialog: false,
+          username: this.$cookie.get('username'),
           mini: false,
-          dialogText: "",
-          dialogTitle: "",
-          loggedIn: true,
-          isRootComponent: true,
-          // clipped: false,
           drawer: true,
-          fixed: false,
           items: [
             {
               icon: "dashboard",
-              title: "Dashboard",
+              title: "AppBoard",
               vertical: "Dashboard",
-              link: "dashboard"
+              link: "IsvAppList"
             },
             {
               icon: "shopping_cart",
               title: "Orders",
               vertical: "Order",
-              link: "orders"
+              link: "IsvOrderList"
             },
-            {
-              icon: "perm_identity",
-              title: "Customers",
-              vertical: "Customer",
-              link: "customers"
-            },
-            {
-              icon: "bubble_chart",
-              title: "Products",
-              vertical: "Product",
-              link: "products"
-            },
-            {
-              icon: "thumbs_up_down",
-              title: "About",
-              vertical: "About",
-              link: "about"
-            }
           ],
           userMenus: [
             {
               icon: "bubble_chart",
               title: "Logout",
-              link: "/logout"
-            },
-            {
-              icon: "bubble_chart",
-              title: "Change Password",
-              link: "/changepassword"
+              link: "/login"
             }
           ],
-          miniVariant: false,
-          right: true,
-          rightDrawer: false,
-          menuItem: "Orders"
+          menuItem: ""
         };
       },
       computed: {
+        role:function(){
+          let role = this.$cookie.get('userRole')
+          console.log('role is '+role)
+          if(role === 'isv'){
+            return '开发者'
+          }else if(role === 'cmpt_conductor'){
+            return '计算审核员'
+          }else if(role === 'data_conductor'){
+            return '数据审核员'
+          }else{
+            return ""
+          }
+        },
+
         activeMenuItem () {
           return this.menuItem;
         }
       },
       methods: {
         clickMenu (item) {
+          console.log(this.$cookie.get("user"));
           this.menuItem = item.title;
           this.$router.push({
-            name: item.title
+            name: item.link
           });
         },
       },
-      mounted () {
-        this.$Progress.finish();
-      }
     }
 </script>
 

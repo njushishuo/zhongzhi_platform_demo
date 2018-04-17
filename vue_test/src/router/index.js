@@ -20,34 +20,33 @@ export default new Router({
       name: 'Login',
       component: VerifyHome,
     },
-
     {
       path:'/isv/:user_id',
       name:'IsvFrame',
       component: IsvFrame,
       children:[
         {
-          path: '/myApp',
+          path: '/isv/myApp',
           name: 'IsvAppList',
           component:IsvAppList,
         },
         {
-          path: '/app/:app_id/detail',
+          path: '/isv/app/:app_id',
           name: 'IsvAppDetail',
           component:IsvAppDetail,
         },
         {
-          path: '/app/:app_id/apply',
+          path: '/isv/app/:app_id/apply',
           name: 'IsvAppResourceApply',
           component:IsvAppResourceApply,
         },
         {
-          path: '/myOrder',
+          path: '/isv/myOrder',
           name: 'IsvOrderList',
           component:IsvOrderList,
         },
         {
-          path: '/order/:order_id',
+          path: '/isv/order/:order_id',
           name: 'IsvOrderDetail',
           component:IsvOrderDetail,
         },
@@ -59,12 +58,12 @@ export default new Router({
       component: AuditorFrame,
       children:[
         {
-          path: '/myOrder',
+          path: '/auditor/myOrder',
           name: 'AuditorOrderList',
           component:AuditorOrderList,
         },
         {
-          path: '/order/:order_id',
+          path: '/auditor/order/:order_id',
           name: 'AuditorOrderDetail',
           component:AuditorOrderDetail,
         },
