@@ -4,8 +4,6 @@ import edu.nju.zhongzhi_demo.entity.User;
 import edu.nju.zhongzhi_demo.model.para.LoginPara;
 import edu.nju.zhongzhi_demo.model.vo.UserVo;
 import edu.nju.zhongzhi_demo.service.AccountService;
-import edu.nju.zhongzhi_demo.service.AuthService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,8 +14,7 @@ public class AuthController {
 
     @Autowired
     AccountService accountService;
-    @Autowired
-    AuthService authService;
+
     @PostMapping("/login")
     public UserVo login(@RequestBody LoginPara loginPara){
 
@@ -29,7 +26,6 @@ public class AuthController {
             if (!loginPara.password.equals(user.getPassword()) ){
                 throw new RuntimeException(Config.ERROR_PASSWORD);
             }else{
-                this.authService.setAuth(user);
                 UserVo userVo = new UserVo(user);
                 return userVo;
             }

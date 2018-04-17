@@ -19,7 +19,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
-@RequestMapping("/workorder")
 public class WorkOrderController {
 
     @Autowired
@@ -36,10 +35,8 @@ public class WorkOrderController {
     AccountService accountService;
     @Autowired
     ResourceService resourceService;
-    @Autowired
-    AuthService authService;
 
-    @PostMapping
+    @PostMapping("/workOrder")
     @Transactional
     public void createWorkOrder(@RequestBody WorkOrderPara workOrderPara){
 
@@ -98,12 +95,12 @@ public class WorkOrderController {
 
     }
 
-    @GetMapping()
-    public List<WorkOrderVo> getWorkOrderByUserId(){
-        return  this.workOrderService.getWorkOrderListByUserId(this.authService.getAuthUser().getId());
+    @GetMapping("/isv/{userId}/workOrderList")
+    public List<WorkOrderVo> getWorkOrderByUserId(@PathVariable int userId){
+        return  this.workOrderService.getWorkOrderListByUserId(userId);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("isv/workOrder/{id}")
     public WorkOrderDetailVo getWorkOrderDetail(@PathVariable int id){
 
         WorkOrder workOrder = this.workOrderRepo.getOne(id);
@@ -119,9 +116,9 @@ public class WorkOrderController {
     }
 
 
-    @GetMapping("/audit")
-    public List<WorkOrderVo> getWorkOrderListForAudit(@RequestBody String status){
-        User user = this.authService.getAuthUser();
+    @GetMapping("/audit/{userId}/workOrder")
+    public List<WorkOrderVo> getWorkOrderListForAudit(@PathVariable int userId, @RequestParam String status){
+        User user = this.accountService.getById(userId);
         if(status.equals(WorkOrderStatus.wait_review.toString())){
             return this.workOrderService.getUnprocessedWorkOrdersByAuditDeptIdAndRole(user.getDeptId(),user.getRole());
         }
@@ -134,9 +131,9 @@ public class WorkOrderController {
     }
 
 
-    @GetMapping("/{id}/audit")
-    public WorkOrderDetailVo getWorkOrderDetailForAuditor(@PathVariable int id){
-        User user = this.authService.getAuthUser();
+    @GetMapping("audit/{userId}/workOrder/{id}/")
+    public WorkOrderDetailVo getWorkOrderDetailForAuditor(@PathVariable int userId,@RequestBody int id){
+        User user = this.accountService.getById(userId);
         WorkOrder workOrder = this.workOrderRepo.getOne(id);
         return this.workOrderService.getWorkOrderDetailForAuditor(user,workOrder);
     }
