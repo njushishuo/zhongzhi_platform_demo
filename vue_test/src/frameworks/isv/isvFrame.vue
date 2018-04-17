@@ -86,13 +86,13 @@
           items: [
             {
               icon: "dashboard",
-              title: "AppBoard",
+              title: "我的应用",
               vertical: "Dashboard",
               link: "IsvAppList"
             },
             {
               icon: "shopping_cart",
-              title: "Orders",
+              title: "我的工单",
               vertical: "Order",
               link: "IsvOrderList"
             },
