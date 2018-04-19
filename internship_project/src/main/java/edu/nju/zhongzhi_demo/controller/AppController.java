@@ -37,7 +37,7 @@ public class AppController {
     }
 
 
-    @GetMapping("/isv/{id}")
+    @GetMapping("/isv/app/{id}")
     public AppVo getAppInfo(@PathVariable int id){
         App app = this.appService.getById(id);
         AppVo appVo = this.appService.transform(app);

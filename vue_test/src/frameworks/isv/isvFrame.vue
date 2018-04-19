@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer class="blue lighten-5" width="250"  light fixed :mini-variant.sync="mini" v-model="drawer" app>
+    <v-navigation-drawer class="grey lighten-4" width="250"  light fixed :mini-variant.sync="mini" v-model="drawer" app>
       <!-- mini-variant.sync="true" -->
       <v-list class="pa-0">
         <v-list-tile avatar tag="div">

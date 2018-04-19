@@ -6,4 +6,8 @@ export default {
     return Axios.get('/isv/'+userId+'/appList')
   },
 
+  getAppDetail(appId){
+    return Axios.get('/isv/app/'+appId)
+  }
+
 }

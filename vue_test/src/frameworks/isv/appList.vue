@@ -19,31 +19,29 @@
           </v-btn>
         </v-card-title>
 
-        <v-data-table v-bind:headers="headers" v-bind:items="items"  hide-actions class="elevation-1 text-xs-left ">
-          <template slot="items" slot-scope="props" class="body-2">
-            <td class="text-xs-left">{{ props.item.name }}</td>
-            <td class="text-xs-left">{{ props.item.type}}</td>
-            <td class="text-xs-left">{{ props.item.deptName}}</td>
-            <td class="text-xs-left">{{ props.item.deptCode}}</td>
-            <td class="text-xs-left">
-              <v-btn fab small dark class="teal" @click.native="edit(props.item)">
-                <v-icon>edit</v-icon>
-              </v-btn>
-              <v-btn fab small class="cyan" @click.native="remove(props.item)">
-                <v-icon>delete</v-icon>
-              </v-btn>
-            </td>
-          </template>
-        </v-data-table>
+        <v-data-table  v-bind:headers="headers" v-bind:items="items"  hide-actions class=" red elevation-1 text-xs-left ">
 
+            <template slot="items" slot-scope="props" class="body-2">
+              <tr  @click = "showAppDetail(props.item.id)">
+                <td class="text-xs-left">{{ props.item.name }}</td>
+                <td class="text-xs-left">{{ props.item.type}}</td>
+                <td class="text-xs-left">{{ props.item.deptName}}</td>
+                <td class="text-xs-left">{{ props.item.deptCode}}</td>
+                <td class="text-xs-left">
+                  <v-btn fab small dark class="teal" @click.native="edit(props.item)">
+                    <v-icon>edit</v-icon>
+                  </v-btn>
+                  <v-btn fab small class="cyan" @click.native="remove(props.item)">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                </td>
+              </tr>
+            </template>
+        </v-data-table>
       </v-card>
     </v-flex>
 
     <confirm-dialog :dialog="dialog" :dialogTitle="dialogTitle" :dialogText="dialogText" @onConfirm="onConfirm" @onCancel="onCancel" ></confirm-dialog>
-    <v-snackbar v-if="loading===false" :right="true" :timeout="timeout" :color="mode" v-model="snackbar" >
-      {{ notice }}
-      <v-btn dark flat @click.native="closeSnackbar">Close</v-btn>
-    </v-snackbar>
   </v-container>
 </template>
 <script>
@@ -100,11 +98,16 @@
         let userId = this.$cookie.get('userId')
         AppService.getMyApps(userId).then((res) => {
           this.items = res.data;
+          console.log(this.items)
         }).catch((err) => {
-          console.log(err)
           let errMsg = (err.response) ? err.response.data.message : '服务器连接出错'
+          console.log(errMsg)
         })
       },
+
+      showAppDetail(appId){
+         this.$router.push({name:'IsvAppDetail',params:{ app_id :appId}})
+      }
     },
 
 

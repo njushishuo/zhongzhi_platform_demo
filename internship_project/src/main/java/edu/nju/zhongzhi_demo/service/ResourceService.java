@@ -38,7 +38,7 @@ public class ResourceService {
      */
     public ResourceInfo getResourceInfoByAppId(int appId){
         List<Object[]> resourceIdAndTypeList = this.workOrderRsrcRepo.findResourceIdAndTypeListByAppIdAndResrcStatus
-                (appId, ResourceStatus.approved.toString());
+                (appId, ResourceStatus.approved);
 
         return this.getResourceInfoByResourceIdAndTypeList(resourceIdAndTypeList);
     }
