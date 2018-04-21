@@ -11,6 +11,10 @@ public class ResrcData extends Resource {
 
     private DataType dataType;
 
+    private String updateCycle;
+
+    private String sqdwName;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "data_type")
     public DataType getDataType() {
@@ -21,4 +25,20 @@ public class ResrcData extends Resource {
         this.dataType = dataType;
     }
 
+
+    public String getSqdwName() {
+        return sqdwName;
+    }
+
+    public void setSqdwName(String sqdwName) {
+        this.sqdwName = sqdwName;
+    }
+
+    public String getUpdateCycle() {
+        return updateCycle;
+    }
+
+    public void setUpdateCycle(String updateCycle) {
+        this.updateCycle = updateCycle;
+    }
 }

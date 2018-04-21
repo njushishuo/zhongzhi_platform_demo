@@ -37,4 +37,6 @@ public interface WorkOrderRsrcRepo extends JpaRepository<WorkOrderRsrc,Integer> 
 
     @Query("select r from ResrcApi r where id in  (select resrcId from WorkOrderRsrc wor where workOrderId = ?1 and resrcType = 'api') ")
     List<ResrcApi> getApiResourcesByWOId(int workOrderId);
+
+
 }

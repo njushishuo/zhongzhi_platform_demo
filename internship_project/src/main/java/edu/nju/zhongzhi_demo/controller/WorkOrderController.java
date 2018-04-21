@@ -3,9 +3,7 @@ package edu.nju.zhongzhi_demo.controller;
 import edu.nju.zhongzhi_demo.dao.AppRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRsrcRepo;
-import edu.nju.zhongzhi_demo.entity.User;
-import edu.nju.zhongzhi_demo.entity.WorkOrder;
-import edu.nju.zhongzhi_demo.entity.WorkOrderRsrc;
+import edu.nju.zhongzhi_demo.entity.*;
 import edu.nju.zhongzhi_demo.enums.ResourceType;
 import edu.nju.zhongzhi_demo.enums.WorkOrderStatus;
 import edu.nju.zhongzhi_demo.model.para.WorkOrderPara;
@@ -16,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -52,46 +51,50 @@ public class WorkOrderController {
         workOrder.setAppId(workOrderPara.appId);
         workOrder.setApplicantId(workOrderPara.userId);
         workOrder.setStatus(WorkOrderStatus.wait_review);
-        workOrder = workOrderRepo.save(workOrder);
+        workOrder = workOrderRepo.saveAndFlush(workOrder);
 
-        if(workOrderPara.cmptIds != null && !workOrderPara.cmptIds.isEmpty()){
-            for(Integer resourceId: workOrderPara.cmptIds){
-                int auditDeptId = this.departmentService.getAuditDeptIdForCmptRsrc(resourceId);
+        List<WorkOrderRsrc> result = new ArrayList<>();
+
+        if(workOrderPara.cmptList != null && !workOrderPara.cmptList.isEmpty()){
+            for(ResrcCmpt resrcCmpt: workOrderPara.cmptList){
+                int auditDeptId = this.departmentService.getAuditDeptIdForCmptRsrc(resrcCmpt.getDepartment().getId());
                 WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
                 workOrderRsrc.setAppId(workOrderPara.appId);
                 workOrderRsrc.setWorkOrderId(workOrder.getId());
-                workOrderRsrc.setResrcId(resourceId);
+                workOrderRsrc.setResrcId(resrcCmpt.getId());
                 workOrderRsrc.setResrcType(ResourceType.compute);
                 workOrderRsrc.setReviewDeptId(auditDeptId);
-                this.workOrderRsrcRepo.save(workOrderRsrc);
+                result.add(workOrderRsrc);
             }
         }
 
-        if(workOrderPara.dataIds !=null && !workOrderPara.dataIds.isEmpty()){
-            for(Integer resourceId: workOrderPara.dataIds){
-                int auditDeptId = this.departmentService.getAuditDeptIdForDataRsrc(resourceId);
+        if(workOrderPara.dataList !=null && !workOrderPara.dataList.isEmpty()){
+            for(ResrcData resrcData: workOrderPara.dataList){
+                int auditDeptId = this.departmentService.getAuditDeptIdForDataRsrc(resrcData.getDepartment().getId());
                 WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
                 workOrderRsrc.setAppId(workOrderPara.appId);
                 workOrderRsrc.setWorkOrderId(workOrder.getId());
-                workOrderRsrc.setResrcId(resourceId);
+                workOrderRsrc.setResrcId(resrcData.getId());
                 workOrderRsrc.setResrcType(ResourceType.data);
                 workOrderRsrc.setReviewDeptId(auditDeptId);
-                this.workOrderRsrcRepo.save(workOrderRsrc);
+                result.add(workOrderRsrc);
             }
         }
 
-        if(workOrderPara.apiIds !=null && !workOrderPara.apiIds.isEmpty()){
-            for(Integer resourceId: workOrderPara.apiIds){
-                int auditDeptId = this.departmentService.getAuditDeptIdForDataRsrc(resourceId);
+        if(workOrderPara.apiList !=null && !workOrderPara.apiList.isEmpty()){
+            for(ResrcApi resrcApi: workOrderPara.apiList){
+                int auditDeptId = this.departmentService.getAuditDeptIdForDataRsrc(resrcApi.getDepartment().getId());
                 WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
                 workOrderRsrc.setAppId(workOrderPara.appId);
                 workOrderRsrc.setWorkOrderId(workOrder.getId());
-                workOrderRsrc.setResrcId(resourceId);
+                workOrderRsrc.setResrcId(resrcApi.getId());
                 workOrderRsrc.setResrcType(ResourceType.api);
                 workOrderRsrc.setReviewDeptId(auditDeptId);
-                this.workOrderRsrcRepo.save(workOrderRsrc);
+                result.add(workOrderRsrc);
             }
         }
+
+        this.workOrderRsrcRepo.saveAll(result);
 
     }
 

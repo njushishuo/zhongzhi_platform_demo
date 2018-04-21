@@ -32,15 +32,20 @@
           </v-list-tile-action>
         </v-list-tile>
       </v-list>
+
+      <v-divider></v-divider>
+
       <v-list>
-        <v-list-tile v-for="item in items" :key="item.title" @click="clickMenu(item)" router>
-          <v-list-tile-action class="pr-1 pl-2 mr-1">
-            <v-icon :class="activeMenuItem.includes(item.title)?'blue--text': ''" :title="item.title"  light v-html="item.icon"></v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content :class="activeMenuItem.includes(item.title)?'blue--text': ''">
-            <v-list-tile-title v-text="item.title"></v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+        <template v-for="(item,index) in items">
+          <v-list-tile :key="item.title" @click="clickMenu(item)" router>
+            <v-list-tile-action class="pr-1 pl-2 mr-1">
+              <v-icon :class="activeMenuItem.includes(item.title)?'blue--text': ''" :title="item.title"  light v-html="item.icon"></v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content :class="activeMenuItem.includes(item.title)?'blue--text': ''">
+              <v-list-tile-title v-text="item.title"></v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </template>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar app="">

@@ -1,7 +1,6 @@
 package edu.nju.zhongzhi_demo.service;
 
 import edu.nju.zhongzhi_demo.dao.*;
-import edu.nju.zhongzhi_demo.entity.Resource;
 import edu.nju.zhongzhi_demo.entity.ResrcApi;
 import edu.nju.zhongzhi_demo.entity.ResrcCmpt;
 import edu.nju.zhongzhi_demo.entity.ResrcData;
@@ -69,8 +68,6 @@ public class ResourceService {
         }
     }
 
-
-
     private ResourceInfo getResourceInfoByResourceIdAndTypeList(List<Object []> resourceIdAndTypeList){
         ResourceInfo resourceInfo = new ResourceInfo();
 
@@ -80,15 +77,15 @@ public class ResourceService {
 
         for(Object[] temp : resourceIdAndTypeList){
 
-            if(temp[1].equals(ResourceType.compute.toString())){
+            if(temp[1] == ResourceType.compute){
                 cmptIds.add((Integer)temp[0]);
             }
 
-            if(temp[1].equals(ResourceType.data.toString())){
+            if(temp[1] == ResourceType.data){
                 dataIds.add((Integer)temp[0]);
             }
 
-            if(temp[1].equals(ResourceType.api.toString())){
+            if(temp[1] == ResourceType.api){
                 apiIds.add((Integer)temp[0]);
             }
         }
@@ -108,5 +105,13 @@ public class ResourceService {
         return resourceInfo;
     }
 
+
+    public ResourceInfo getResourceInfoAppCanApply(int appId){
+        List<Object[]> resourceIdAndTypeList = this.resourceRepo.
+                getResourceIdAndTypeListAppCanApply(appId,ResourceStatus.approved);
+
+        System.err.println(resourceIdAndTypeList.size());
+        return this.getResourceInfoByResourceIdAndTypeList(resourceIdAndTypeList);
+    }
 
 }

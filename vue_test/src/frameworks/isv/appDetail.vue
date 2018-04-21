@@ -32,7 +32,7 @@
 
         <v-layout row wrap>
           <v-flex xs10 offset-xs1>
-            <span  class="grey--text">部门描述：</span>
+            <span  class="grey--text">应用描述：</span>
             <span>{{this.appVo.description}}</span>
           </v-flex>
         </v-layout>
@@ -41,11 +41,16 @@
 
       <!--App resource info-->
       <v-container >
-        <span>资源信息</span>
+          <v-layout row wrap>
+            <v-flex xs12>
+              <span>资源信息</span>
+              <a class="right btn--flat" @click="jumpToApplyPage">追加资源</a>
+            </v-flex>
+          </v-layout>
       </v-container>
       <v-divider></v-divider>
       <v-container>
-        <v-container class="grey lighten-2">
+        <v-container >
           <span>计算资源</span>
         </v-container>
         <v-data-table v-bind:headers="cmptHeaders" v-bind:items="cmptItems"  hide-actions class="elevation-1 text-xs-left ">
@@ -69,7 +74,7 @@
       </v-container>
 
       <v-container>
-        <v-container class="grey lighten-2">
+        <v-container >
           <span>数据资源</span>
         </v-container>
         <v-data-table flat v-bind:headers="dataHeaders" v-bind:items="dataItems"  hide-actions class="elevation-1 text-xs-left ">
@@ -86,7 +91,7 @@
       </v-container>
 
       <v-container>
-        <v-container class="grey lighten-2">
+        <v-container >
           <span>API资源</span>
         </v-container>
         <v-data-table v-bind:headers="apiHeaders" v-bind:items="apiItems"  hide-actions class="elevation-1 text-xs-left ">
@@ -169,6 +174,10 @@
             // console.log(err)
             let errMsg = (err.response) ? err.response.data.message : '服务器连接出错'
           })
+        },
+
+        jumpToApplyPage(){
+          this.$router.push({name:'IsvAppResourceApply', params:{app_id:this.appId}})
         }
       },
 

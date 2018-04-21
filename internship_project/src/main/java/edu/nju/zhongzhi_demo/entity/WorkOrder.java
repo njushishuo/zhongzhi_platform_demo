@@ -18,6 +18,7 @@ public class WorkOrder {
     private Timestamp createdTime;
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "id")
     public int getId() {
         return id;

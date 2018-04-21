@@ -11,11 +11,11 @@ public class Resource {
     private int id;
     private String name;
     private ResourceType resourceType;
-    private Integer deptId;
+    private Department department;
 
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }
@@ -40,14 +40,14 @@ public class Resource {
         this.resourceType = resourceType;
     }
 
-    @Basic
-    @Column(name = "dept_id")
-    public Integer getDeptId() {
-        return deptId;
+    @ManyToOne()
+    @JoinColumn(name="dept_id")
+    public Department getDepartment() {
+        return department;
     }
 
-    public void setDeptId(Integer deptId) {
-        this.deptId = deptId;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
 }

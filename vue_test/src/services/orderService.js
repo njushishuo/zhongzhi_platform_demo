@@ -8,6 +8,10 @@ export default {
 
   isvGetOrderDetail(woId){
     return Axios.get('/isv/workorder/'+woId)
+  },
+
+  createOrder(params){
+    return Axios.post('/workOrder',params)
   }
 
 }
