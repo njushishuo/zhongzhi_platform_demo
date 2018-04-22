@@ -4,10 +4,13 @@ import edu.nju.zhongzhi_demo.dao.*;
 import edu.nju.zhongzhi_demo.entity.ResrcApi;
 import edu.nju.zhongzhi_demo.entity.ResrcCmpt;
 import edu.nju.zhongzhi_demo.entity.ResrcData;
+import edu.nju.zhongzhi_demo.entity.WorkOrderRsrc;
 import edu.nju.zhongzhi_demo.enums.ResourceStatus;
 import edu.nju.zhongzhi_demo.enums.ResourceType;
 import edu.nju.zhongzhi_demo.enums.Role;
+import edu.nju.zhongzhi_demo.model.wrapper.ResourceDetail;
 import edu.nju.zhongzhi_demo.model.wrapper.ResourceInfo;
+import edu.nju.zhongzhi_demo.util.VoTransformHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,8 @@ public class ResourceService {
     ResrcApiRepo resrcApiRepo;
     @Autowired
     ResrcDataRepo resrcDataRepo;
+    @Autowired
+    VoTransformHelper voTransformHelper;
 
 
 
@@ -42,10 +47,29 @@ public class ResourceService {
         return this.getResourceInfoByResourceIdAndTypeList(resourceIdAndTypeList);
     }
 
-    public ResourceInfo getResourceInfoByWorkOrderId(int workOrderId){
-        List<Object[]> resourceIdAndTypeList = this.workOrderRsrcRepo.findResourceIdAndTypeListByWOId
-                (workOrderId);
+
+    /**
+     *
+     * 获取某个应用可以申请的资源清单
+     * @return
+     */
+    public ResourceInfo getResourceInfoAppCanApply(int appId){
+        List<Object[]> resourceIdAndTypeList = this.resourceRepo.
+                getResourceIdAndTypeListAppCanApply(appId,ResourceStatus.approved);
+
+        System.err.println(resourceIdAndTypeList.size());
         return this.getResourceInfoByResourceIdAndTypeList(resourceIdAndTypeList);
+    }
+
+
+    /**
+     * 获取某个工单的资源信息
+     * @param workOrderId
+     * @return
+     */
+    public ResourceDetail getResourceDetailByWorkOrderId(int workOrderId){
+        List<WorkOrderRsrc> workOrderRsrcList = this.workOrderRsrcRepo.findByWorkOrderId(workOrderId);
+        return this.getResourceDetailByWorList(workOrderRsrcList);
     }
 
     public ResourceInfo getResourceInfoByWorkOrderIdAndRole(int workOrderId , Role role){
@@ -67,6 +91,7 @@ public class ResourceService {
             throw new RuntimeException("Role Error");
         }
     }
+
 
     private ResourceInfo getResourceInfoByResourceIdAndTypeList(List<Object []> resourceIdAndTypeList){
         ResourceInfo resourceInfo = new ResourceInfo();
@@ -105,13 +130,28 @@ public class ResourceService {
         return resourceInfo;
     }
 
+    private ResourceDetail  getResourceDetailByWorList(List<WorkOrderRsrc> workOrderRsrcs){
+        ResourceDetail resourceDetail = new ResourceDetail();
 
-    public ResourceInfo getResourceInfoAppCanApply(int appId){
-        List<Object[]> resourceIdAndTypeList = this.resourceRepo.
-                getResourceIdAndTypeListAppCanApply(appId,ResourceStatus.approved);
+        for(WorkOrderRsrc workOrderRsrc : workOrderRsrcs){
 
-        System.err.println(resourceIdAndTypeList.size());
-        return this.getResourceInfoByResourceIdAndTypeList(resourceIdAndTypeList);
+            if(workOrderRsrc.getResrcType() == ResourceType.compute){
+                ResrcCmpt resrcCmpt = this.resrcCmptRepo.getOne(workOrderRsrc.getResrcId());
+                resourceDetail.resrcCmptList.add(voTransformHelper.toCmptDetailVo(resrcCmpt,workOrderRsrc));
+            }
+
+            if(workOrderRsrc.getResrcType() == ResourceType.data){
+                ResrcData resrcData = this.resrcDataRepo.getOne(workOrderRsrc.getResrcId());
+                resourceDetail.resrcDataList.add(voTransformHelper.toDataDetailVo(resrcData,workOrderRsrc));
+            }
+
+            if(workOrderRsrc.getResrcType() == ResourceType.api){
+                ResrcApi resrcApi = this.resrcApiRepo.getOne(workOrderRsrc.getResrcId());
+                resourceDetail.resrcApiList.add(voTransformHelper.toApiDetailVo(resrcApi,workOrderRsrc));
+            }
+        }
+
+        return  resourceDetail;
     }
 
 }

@@ -1,6 +1,8 @@
 package edu.nju.zhongzhi_demo.service;
 
+import edu.nju.zhongzhi_demo.controller.Config;
 import edu.nju.zhongzhi_demo.dao.AppRepo;
+import edu.nju.zhongzhi_demo.dao.DepartmentRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRsrcRepo;
 import edu.nju.zhongzhi_demo.entity.User;
@@ -8,6 +10,8 @@ import edu.nju.zhongzhi_demo.entity.WorkOrder;
 import edu.nju.zhongzhi_demo.enums.Role;
 import edu.nju.zhongzhi_demo.model.vo.WorkOrderDetailVo;
 import edu.nju.zhongzhi_demo.model.vo.WorkOrderVo;
+import edu.nju.zhongzhi_demo.util.DateHelper;
+import edu.nju.zhongzhi_demo.util.EnumTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +33,8 @@ public class WorkOrderService {
     AccountService accountService;
     @Autowired
     ResourceService resourceService;
+    @Autowired
+    DepartmentRepo departmentRepo;
 
     public List<WorkOrderVo> getWorkOrderListByUserId(int userId){
         List<WorkOrder> workOrderList = this.workOrderRepo.getByApplicantId(userId);
@@ -38,7 +44,12 @@ public class WorkOrderService {
 
         Map<Integer,String> appIdAndNameMap = new HashMap<>();
         List<WorkOrderVo> result = new ArrayList<>();
-        String userName = this.accountService.getById(userId).getUsername();
+        User user =  this.accountService.getById(userId);
+        if(user == null){
+            throw new RuntimeException(Config.USER_NOT_EXISTS);
+        }
+        String userName =user.getUsername();
+        String deptName = this.departmentRepo.getOne(user.getDeptId()).getName();
 
         for(WorkOrder workOrder : workOrderList){
             WorkOrderVo vo = new WorkOrderVo();
@@ -49,12 +60,33 @@ public class WorkOrderService {
 
             vo.appName = appIdAndNameMap.get(workOrder.getAppId());
             vo.userName = userName;
-            vo.status = workOrder.getStatus().toString();
-            vo.reviewStatus = workOrder.getStatus().toString();
+            vo.deptName = deptName;
+            vo.createTime = DateHelper.TimestampToString(workOrder.getCreatedTime());
             result.add(vo);
         }
 
         return result;
+    }
+
+    public WorkOrderDetailVo getWorkOrderDetail(int id) {
+        WorkOrder workOrder = this.workOrderRepo.getOne(id);
+        WorkOrderDetailVo vo = new WorkOrderDetailVo();
+        User user =  this.accountService.getById(workOrder.getApplicantId());
+        if(user == null){
+            throw new RuntimeException(Config.USER_NOT_EXISTS);
+        }
+        String userName =user.getUsername();
+        String deptName = this.departmentRepo.getOne(user.getDeptId()).getName();
+        vo.id = id;
+        vo.appName = this.appRepo.getOne(workOrder.getAppId()).getName();
+        vo.userName = userName;
+        vo.deptName = deptName;
+        vo.createTime = DateHelper.TimestampToString(workOrder.getCreatedTime());
+        vo.reviewTime = EnumTranslator.translate(workOrder.getReviewTime());
+        vo.status = EnumTranslator.translate(workOrder.getStatus());
+        vo.reviewStatus = EnumTranslator.translate(workOrder.getReviewResult());
+        vo.resourceDetail = this.resourceService.getResourceDetailByWorkOrderId(id);
+        return vo;
     }
 
     public List<WorkOrderVo> getUnprocessedWorkOrdersByAuditDeptIdAndRole
@@ -108,7 +140,7 @@ public class WorkOrderService {
     public WorkOrderDetailVo getWorkOrderDetailForAuditor(User auditor , WorkOrder workOrder){
         WorkOrderVo workOrderVo = this.transform(workOrder);
         WorkOrderDetailVo detailVo = new WorkOrderDetailVo(workOrderVo);
-        detailVo.resourceInfo = this.resourceService.getResourceInfoByWorkOrderIdAndRole(workOrder.getId(),auditor.getRole());
+        //detailVo.resourceDetail = this.resourceService.getResourceInfoByWorkOrderIdAndRole(workOrder.getId(),auditor.getRole());
         return detailVo;
     }
 
@@ -120,9 +152,8 @@ public class WorkOrderService {
         vo.id = workOrder.getId();
         vo.appName = this.appRepo.getOne(workOrder.getAppId()).getName();
         vo.userName = userName;
-        vo.status = workOrder.getStatus().toString();
-        vo.reviewStatus = workOrder.getStatus().toString();
         return vo;
     }
+
 
 }

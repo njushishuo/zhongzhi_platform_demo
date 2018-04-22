@@ -1,10 +1,13 @@
 package edu.nju.zhongzhi_demo.model.vo;
 
+import edu.nju.zhongzhi_demo.model.wrapper.ResourceDetail;
 import edu.nju.zhongzhi_demo.model.wrapper.ResourceInfo;
 
 
 public class WorkOrderDetailVo extends WorkOrderVo {
 
+    public String status;
+    public String reviewStatus;
 
     public WorkOrderDetailVo (){
 
@@ -13,11 +16,12 @@ public class WorkOrderDetailVo extends WorkOrderVo {
     public WorkOrderDetailVo(WorkOrderVo workOrderVo){
         this.id = workOrderVo.id;
         this.appName = workOrderVo.appName;
-        this.status = workOrderVo.status;
-        this.reviewStatus = workOrderVo.reviewStatus;
         this.userName = workOrderVo.userName;
+        this.deptName = workOrderVo.deptName;
+        this.createTime = workOrderVo.createTime;
+        this.reviewTime = workOrderVo.reviewTime;
     }
 
-    public ResourceInfo resourceInfo;
+    public ResourceDetail resourceDetail;
 
 }

@@ -13,8 +13,8 @@ public interface WorkOrderRsrcRepo extends JpaRepository<WorkOrderRsrc,Integer> 
     List<Object []> findResourceIdAndTypeListByAppIdAndResrcStatus(int appId , ResourceStatus resrcStatus);
 
 
-    @Query("select resrcId , resrcType from WorkOrderRsrc wor where workOrderId = ?1 ")
-    List<Object []> findResourceIdAndTypeListByWOId(int workOrderId);
+    @Query("select wor from WorkOrderRsrc wor where workOrderId = ?1 ")
+    List<WorkOrderRsrc> findByWorkOrderId(int workOrderId);
 
 
     @Query("select distinct workOrderId from WorkOrderRsrc wor where reviewDeptId = ?1 and resrcType = 'compute' and resrcStatus is null ")

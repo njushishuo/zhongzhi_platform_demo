@@ -17,7 +17,8 @@ public class WorkOrderRsrc {
     private ResourceType resrcType;
     private ResourceStatus resrcStatus;
     private Integer reviewDeptId;
-    private Timestamp processTime;
+    private Integer reviewUserId;
+    private Timestamp reviewTime;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -92,13 +93,13 @@ public class WorkOrderRsrc {
     }
 
     @Basic
-    @Column(name = "process_time")
-    public Timestamp getProcessTime() {
-        return processTime;
+    @Column(name = "review_time")
+    public Timestamp getReviewTime() {
+        return reviewTime;
     }
 
-    public void setProcessTime(Timestamp processTime) {
-        this.processTime = processTime;
+    public void setReviewTime(Timestamp reviewTime) {
+        this.reviewTime = reviewTime;
     }
 
     @Override
@@ -112,12 +113,23 @@ public class WorkOrderRsrc {
                 Objects.equals(resrcType, that.resrcType) &&
                 Objects.equals(resrcStatus, that.resrcStatus) &&
                 Objects.equals(reviewDeptId, that.reviewDeptId) &&
-                Objects.equals(processTime, that.processTime);
+                Objects.equals(reviewTime, that.reviewTime);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, workOrderId, resrcId, resrcType, resrcStatus, reviewDeptId, processTime);
+        return Objects.hash(id, workOrderId, resrcId, resrcType, resrcStatus, reviewDeptId, reviewTime);
+    }
+
+
+    @Basic
+    @Column(name = "review_user_id")
+    public Integer getReviewUserId() {
+        return reviewUserId;
+    }
+
+    public void setReviewUserId(Integer reviewUserId) {
+        this.reviewUserId = reviewUserId;
     }
 }

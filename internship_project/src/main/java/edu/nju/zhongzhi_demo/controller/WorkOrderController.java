@@ -103,23 +103,14 @@ public class WorkOrderController {
         return  this.workOrderService.getWorkOrderListByUserId(userId);
     }
 
-    @GetMapping("isv/workOrder/{id}")
+    @GetMapping("/isv/workOrder/{id}")
     public WorkOrderDetailVo getWorkOrderDetail(@PathVariable int id){
 
-        WorkOrder workOrder = this.workOrderRepo.getOne(id);
-        WorkOrderDetailVo vo = new WorkOrderDetailVo();
-        String userName = this.accountService.getById(workOrder.getApplicantId()).getUsername();
-        vo.id = id;
-        vo.appName = this.appRepo.getOne(workOrder.getAppId()).getName();
-        vo.userName = userName;
-        vo.status = workOrder.getStatus().toString();
-        vo.reviewStatus = workOrder.getStatus().toString();
-        vo.resourceInfo = this.resourceService.getResourceInfoByWorkOrderId(id);
-        return vo;
+        return this.workOrderService.getWorkOrderDetail(id);
     }
 
 
-    @GetMapping("/audit/{userId}/workOrder")
+    @GetMapping("/auditor/{userId}/workOrder")
     public List<WorkOrderVo> getWorkOrderListForAudit(@PathVariable int userId, @RequestParam String status){
         User user = this.accountService.getById(userId);
         if(status.equals(WorkOrderStatus.wait_review.toString())){
@@ -134,7 +125,7 @@ public class WorkOrderController {
     }
 
 
-    @GetMapping("audit/{userId}/workOrder/{id}/")
+    @GetMapping("auditor/{userId}/workOrder/{id}/")
     public WorkOrderDetailVo getWorkOrderDetailForAuditor(@PathVariable int userId,@RequestBody int id){
         User user = this.accountService.getById(userId);
         WorkOrder workOrder = this.workOrderRepo.getOne(id);

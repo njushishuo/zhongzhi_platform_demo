@@ -16,6 +16,7 @@ public class WorkOrder {
     private Integer appId;
     private Integer applicantId;
     private Timestamp createdTime;
+    private Timestamp reviewTime;
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -95,5 +96,15 @@ public class WorkOrder {
     public int hashCode() {
 
         return Objects.hash(id, status, reviewResult, appId, applicantId, createdTime);
+    }
+
+    @Basic
+    @Column(name = "review_time")
+    public Timestamp getReviewTime() {
+        return reviewTime;
+    }
+
+    public void setReviewTime(Timestamp reviewTime) {
+        this.reviewTime = reviewTime;
     }
 }
