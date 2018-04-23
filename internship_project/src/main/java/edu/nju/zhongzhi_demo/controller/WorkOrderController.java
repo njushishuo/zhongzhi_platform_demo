@@ -6,6 +6,7 @@ import edu.nju.zhongzhi_demo.dao.WorkOrderRsrcRepo;
 import edu.nju.zhongzhi_demo.entity.*;
 import edu.nju.zhongzhi_demo.enums.ResourceType;
 import edu.nju.zhongzhi_demo.enums.WorkOrderStatus;
+import edu.nju.zhongzhi_demo.model.para.StatusPara;
 import edu.nju.zhongzhi_demo.model.para.WorkOrderPara;
 import edu.nju.zhongzhi_demo.model.vo.WorkOrderDetailVo;
 import edu.nju.zhongzhi_demo.model.vo.WorkOrderVo;
@@ -110,7 +111,7 @@ public class WorkOrderController {
     }
 
 
-    @GetMapping("/auditor/{userId}/workOrder")
+    @GetMapping("/auditor/{userId}/workOrderList")
     public List<WorkOrderVo> getWorkOrderListForAudit(@PathVariable int userId, @RequestParam String status){
         User user = this.accountService.getById(userId);
         if(status.equals(WorkOrderStatus.wait_review.toString())){

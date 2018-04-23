@@ -9,4 +9,5 @@ public interface WorkOrderRepo extends JpaRepository<WorkOrder,Integer> {
 
     List<WorkOrder> getByApplicantId(int id);
 
+    List<WorkOrder> getAllByIdIn(List<Integer> ids);
 }

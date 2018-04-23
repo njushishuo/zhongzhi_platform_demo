@@ -12,6 +12,13 @@ export default {
 
   createOrder(params){
     return Axios.post('/workOrder',params)
-  }
+  },
 
+  auditorGetMyOrders(userId,status){
+    return Axios.get('/auditor/'+userId+'/workOrderList'+'?status='+status)
+  },
+
+  auditorGetOrderDetail(userId,woId){
+    return Axios.get('/auditor/'+userId+'/workOrder/'+woId)
+  }
 }

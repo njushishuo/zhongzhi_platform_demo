@@ -32,16 +32,32 @@
           </v-list-tile-action>
         </v-list-tile>
       </v-list>
+
       <v-list>
-        <v-list-tile v-for="item in items" :key="item.title" @click="clickMenu(item)" router>
-          <v-list-tile-action class="pr-1 pl-2 mr-1">
-            <v-icon :class="activeMenuItem.includes(item.title)?'blue--text': ''" :title="item.title"  light v-html="item.icon"></v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content :class="activeMenuItem.includes(item.title)?'blue--text': ''">
-            <v-list-tile-title v-text="item.title"></v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+        <v-list-group
+          v-model="item.active"
+          v-for="item in items"
+          :key="item.title"
+          :prepend-icon="item.action"
+          no-action
+        >
+          <v-list-tile slot="activator">
+            <v-list-tile-content>
+              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile v-for="subItem in item.items" :key="subItem.title" :to="subItem.link" >
+            <v-list-tile-content>
+              <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-icon>{{ subItem.action }}</v-icon>
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list-group>
       </v-list>
+
+
     </v-navigation-drawer>
     <v-toolbar app="">
       <v-toolbar-side-icon @click.native.stop="drawer = !drawer" light></v-toolbar-side-icon>
@@ -85,10 +101,12 @@
         drawer: true,
         items: [
           {
-            icon: "shopping_cart",
-            title: "Orders",
-            vertical: "Order",
-            link: "IsvOrderList"
+            action: 'shopping_cart',
+            title: '工单管理',
+            items: [
+              { title: '待审核' ,link:{name:'ProcessedOrderList'}},
+              { title: '已处理' ,link:{name:'UnprocessedOrderList'}}
+            ]
           },
         ],
         userMenus: [

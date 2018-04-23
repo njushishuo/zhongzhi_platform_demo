@@ -12,6 +12,7 @@ import edu.nju.zhongzhi_demo.model.vo.WorkOrderDetailVo;
 import edu.nju.zhongzhi_demo.model.vo.WorkOrderVo;
 import edu.nju.zhongzhi_demo.util.DateHelper;
 import edu.nju.zhongzhi_demo.util.EnumTranslator;
+import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,7 +93,7 @@ public class WorkOrderService {
     public List<WorkOrderVo> getUnprocessedWorkOrdersByAuditDeptIdAndRole
             (int deptId , Role role ){
 
-        List<Integer> workOrderIds = new ArrayList<>();
+        List<Integer> workOrderIds ;
         if(role == Role.cmpt_conductor){
             workOrderIds = this.workOrderRsrcRepo.getUnprocessedCmptWorkOrdersByAuditDeptId(deptId);
         }else if(role == Role.data_conductor){
@@ -102,9 +103,10 @@ public class WorkOrderService {
         }
 
         if(workOrderIds != null && !workOrderIds.isEmpty()){
+            List<WorkOrder> workOrderList = this.workOrderRepo.getAllByIdIn(workOrderIds);
             List<WorkOrderVo> result = new ArrayList<>();
-            for(Integer workOrderId : workOrderIds){
-                WorkOrderVo vo = this.transform(this.workOrderRepo.getOne(workOrderId));
+            for(WorkOrder workOrder : workOrderList){
+                WorkOrderVo vo = this.transform(workOrder);
                 result.add(vo);
             }
             return result;
@@ -146,12 +148,18 @@ public class WorkOrderService {
 
 
     private WorkOrderVo transform(WorkOrder workOrder){
-
         WorkOrderVo vo = new WorkOrderVo();
-        String userName = this.accountService.getById(workOrder.getApplicantId()).getUsername();
+        User user = this.accountService.getById(workOrder.getApplicantId());
+        if(user == null){
+            throw new RuntimeException(Config.USER_NOT_EXISTS);
+        }
+        String deptName = this.departmentRepo.getOne(user.getDeptId()).getName();
+        String userName = user.getUsername();
         vo.id = workOrder.getId();
         vo.appName = this.appRepo.getOne(workOrder.getAppId()).getName();
         vo.userName = userName;
+        vo.deptName = deptName;
+        vo.createTime = DateHelper.TimestampToString(workOrder.getCreatedTime());
         return vo;
     }
 

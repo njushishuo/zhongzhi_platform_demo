@@ -9,7 +9,8 @@ import IsvAppResourceApply from '@/frameworks/isv/resourceApply'
 import IsvOrderList from '@/frameworks/isv/isvOrderList'
 import IsvOrderDetail from '@/frameworks/isv/isvOrderDetail'
 import AuditorOrderDetail from '@/frameworks/auditor/auditorOrderDetail'
-import AuditorOrderList from '@/frameworks/auditor/auditorOrderList'
+import ProcessedOrderList from '@/frameworks/auditor/processedOrderList'
+import UnprocessedOrderList from '@/frameworks/auditor/unprocessedOrderList'
 
 Vue.use(Router)
 
@@ -58,9 +59,14 @@ export default new Router({
       component: AuditorFrame,
       children:[
         {
-          path: '/auditor/myOrder',
-          name: 'AuditorOrderList',
-          component:AuditorOrderList,
+          path: '/auditor/order/wait_review',
+          name: 'UnprocessedOrderList',
+          component:UnprocessedOrderList,
+        },
+        {
+          path: '/auditor/order/processed',
+          name: 'ProcessedOrderList',
+          component:ProcessedOrderList,
         },
         {
           path: '/auditor/order/:order_id',

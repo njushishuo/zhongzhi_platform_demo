@@ -35,51 +35,49 @@
     </v-flex>
   </v-container>
 </template>
+
 <script>
   import WorkOrderService from '@/services/orderService'
-
   export default {
-    name:'orderList',
-    data () {
-      return {
-        dialog: false,
-        dialogTitle: "Order Delete Dialog",
-        dialogText: "是否要删除该工单?",
-
-        headers: [
-          { text: "工单号", left: true,sortable: false, },
-          { text: "应用名称", left: true, sortable: false, },
-          { text: "申请人", left: true,sortable: false,},
-          { text: "申请部门",left: true, sortable: false,},
-          { text: "申请时间",left: true, sortable: false,},
-        ],
-        items:[],
-
-        orderId: "",
-      };
-    },
-    methods: {
-      print () {
-        window.print();
+      name: "UnprocessedOrderList",
+      data () {
+        return {
+          headers: [
+            { text: "工单号", left: true,sortable: false, },
+            { text: "应用名称", left: true, sortable: false, },
+            { text: "申请人", left: true,sortable: false,},
+            { text: "申请部门",left: true, sortable: false,},
+            { text: "申请时间",left: true, sortable: false,},
+          ],
+          items:[],
+        };
       },
+      methods: {
+        print () {
+          window.print();
+        },
 
-      loadData(){
-        let userId = this.$cookie.get('userId')
-        WorkOrderService.isvGetMyOrders(userId).then((res) => {
-          this.items = res.data;
-          console.log(this.items)
-        }).catch((err) => {
-          let errMsg = (err.response) ? err.response.data.message : '服务器连接出错'
-          console.log(errMsg)
-        })
+        loadUnprocessedData(){
+          var userId = this.$cookie.get('userId')
+          var status = "wait_review"
+          WorkOrderService.auditorGetMyOrders(userId,status).then((res) => {
+            this.items1 = res.data;
+            console.log(this.items1)
+          }).catch((err) => {
+            let errMsg = (err.response) ? err.response.data.message : '服务器连接出错'
+            console.log(errMsg)
+          })
+        },
+        showOrderDetail(orderId){
+          this.$router.push({name:'AuditorOrderDetail',params:{ order_id :orderId}})
+        }
       },
-
-      showOrderDetail(orderId){
-        this.$router.push({name:'IsvOrderDetail',params:{ order_id :orderId}})
+      created () {
+        this.loadUnprocessedData();
       }
-    },
-    created () {
-      this.loadData()
     }
-  };
 </script>
+
+<style scoped>
+
+</style>
