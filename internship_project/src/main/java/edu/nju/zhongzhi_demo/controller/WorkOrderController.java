@@ -126,10 +126,10 @@ public class WorkOrderController {
     }
 
 
-    @GetMapping("auditor/{userId}/workOrder/{id}/")
-    public WorkOrderDetailVo getWorkOrderDetailForAuditor(@PathVariable int userId,@RequestBody int id){
+    @GetMapping("/auditor/{userId}/workOrder/{woId}")
+    public WorkOrderDetailVo getWorkOrderDetailForAuditor(@PathVariable int userId,@PathVariable int woId){
         User user = this.accountService.getById(userId);
-        WorkOrder workOrder = this.workOrderRepo.getOne(id);
+        WorkOrder workOrder = this.workOrderRepo.getOne(woId);
         return this.workOrderService.getWorkOrderDetailForAuditor(user,workOrder);
     }
 

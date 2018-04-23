@@ -71,19 +71,9 @@ public class WorkOrderService {
 
     public WorkOrderDetailVo getWorkOrderDetail(int id) {
         WorkOrder workOrder = this.workOrderRepo.getOne(id);
-        WorkOrderDetailVo vo = new WorkOrderDetailVo();
-        User user =  this.accountService.getById(workOrder.getApplicantId());
-        if(user == null){
-            throw new RuntimeException(Config.USER_NOT_EXISTS);
-        }
-        String userName =user.getUsername();
-        String deptName = this.departmentRepo.getOne(user.getDeptId()).getName();
-        vo.id = id;
-        vo.appName = this.appRepo.getOne(workOrder.getAppId()).getName();
-        vo.userName = userName;
-        vo.deptName = deptName;
-        vo.createTime = DateHelper.TimestampToString(workOrder.getCreatedTime());
-        vo.reviewTime = EnumTranslator.translate(workOrder.getReviewTime());
+        WorkOrderVo workOrderVo = this.transform(workOrder);
+        WorkOrderDetailVo vo = new WorkOrderDetailVo(workOrderVo);
+
         vo.status = EnumTranslator.translate(workOrder.getStatus());
         vo.reviewStatus = EnumTranslator.translate(workOrder.getReviewResult());
         vo.resourceDetail = this.resourceService.getResourceDetailByWorkOrderId(id);
@@ -117,7 +107,7 @@ public class WorkOrderService {
 
     public List<WorkOrderVo> getProcessedWorkOrdersByAuditDeptIdAndRole
             (int deptId , Role role ){
-        List<Integer> workOrderIds = new ArrayList<>();
+        List<Integer> workOrderIds;
         if(role == Role.cmpt_conductor){
             workOrderIds = this.workOrderRsrcRepo.getProcessedCmptWorkOrdersByAuditDeptId(deptId);
         }else if(role == Role.data_conductor){
@@ -127,9 +117,10 @@ public class WorkOrderService {
         }
 
         if(workOrderIds != null && !workOrderIds.isEmpty()){
+            List<WorkOrder> workOrderList = this.workOrderRepo.getAllByIdIn(workOrderIds);
             List<WorkOrderVo> result = new ArrayList<>();
-            for(Integer workOrderId : workOrderIds){
-                WorkOrderVo vo = this.transform(this.workOrderRepo.getOne(workOrderId));
+            for(WorkOrder workOrder : workOrderList){
+                WorkOrderVo vo = this.transform(workOrder);
                 result.add(vo);
             }
             return result;
@@ -140,9 +131,14 @@ public class WorkOrderService {
 
 
     public WorkOrderDetailVo getWorkOrderDetailForAuditor(User auditor , WorkOrder workOrder){
+
         WorkOrderVo workOrderVo = this.transform(workOrder);
         WorkOrderDetailVo detailVo = new WorkOrderDetailVo(workOrderVo);
-        //detailVo.resourceDetail = this.resourceService.getResourceInfoByWorkOrderIdAndRole(workOrder.getId(),auditor.getRole());
+
+        detailVo.status = EnumTranslator.translate(workOrder.getStatus());
+        detailVo.reviewStatus = EnumTranslator.translate(workOrder.getReviewResult());
+        detailVo.resourceDetail = this.resourceService.
+                getResourceDetailByWorkOrderIdAndRole(workOrder.getId(),auditor.getRole());
         return detailVo;
     }
 
@@ -160,6 +156,7 @@ public class WorkOrderService {
         vo.userName = userName;
         vo.deptName = deptName;
         vo.createTime = DateHelper.TimestampToString(workOrder.getCreatedTime());
+        vo.reviewTime = EnumTranslator.translate(workOrder.getReviewTime());
         return vo;
     }
 

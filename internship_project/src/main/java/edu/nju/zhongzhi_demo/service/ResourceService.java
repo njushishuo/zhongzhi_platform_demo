@@ -72,21 +72,13 @@ public class ResourceService {
         return this.getResourceDetailByWorList(workOrderRsrcList);
     }
 
-    public ResourceInfo getResourceInfoByWorkOrderIdAndRole(int workOrderId , Role role){
+    public ResourceDetail getResourceDetailByWorkOrderIdAndRole(int workOrderId , Role role){
         if(role == Role.cmpt_conductor){
-            List<ResrcCmpt> resourceList = this.workOrderRsrcRepo.getCmptResourcesByWOId(workOrderId);
-            ResourceInfo resourceInfo = new ResourceInfo();
-            resourceInfo.resrcCmptList = resourceList;
-            return resourceInfo;
+            List<WorkOrderRsrc> workOrderRsrcList = this.workOrderRsrcRepo.findCmptRecordByWorkOrderId(workOrderId);
+            return this.getResourceDetailByWorList(workOrderRsrcList);
         }else if(role == Role.data_conductor){
-
-            List<ResrcData> resourceDataList = this.workOrderRsrcRepo.getDataResourcesByWOId(workOrderId);
-            List<ResrcApi> resourceApiList = this.workOrderRsrcRepo.getApiResourcesByWOId(workOrderId);
-            ResourceInfo resourceInfo = new ResourceInfo();
-            resourceInfo.resrcDataList = resourceDataList;
-            resourceInfo.resrcApiList = resourceApiList;
-            return resourceInfo;
-
+            List<WorkOrderRsrc> workOrderRsrcList = this.workOrderRsrcRepo.findDataRecordByWorkOrderId(workOrderId);
+            return this.getResourceDetailByWorList(workOrderRsrcList);
         }else{
             throw new RuntimeException("Role Error");
         }
