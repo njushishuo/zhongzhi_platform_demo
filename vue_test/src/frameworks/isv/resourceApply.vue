@@ -149,8 +149,8 @@
     name: "ResourceApply",
     data(){
       return{
-        appId:this.$route.params.app_id,
-        resourceInfo: {
+        orderId:this.$route.params.app_id,
+        resourceDetail: {
           resrcCmptList : [],
           resrcDataList: [],
           resrcApiList:[]
@@ -189,10 +189,10 @@
 
     methods:{
       fetchData(){
-        ResourceService.getResourceAppCanApply(this.appId).then((res) => {
+        ResourceService.getResourceAppCanApply(this.orderId).then((res) => {
           this.resourceInfo = res.data;
-          console.log("resourceInfo: ")
-          console.log(this.resourceInfo)
+          console.log("resourceDetail: ")
+          console.log(this.resourceDetail)
         }).catch((err) => {
           // console.log(err)
           let errMsg = (err.response) ? err.response.data.message : '服务器连接出错'
@@ -200,34 +200,34 @@
       },
       toggleAllCmpt(){
         if (this.cmptSelected.length != 0) this.cmptSelected = []
-        else this.cmptSelected = this.resourceInfo.resrcCmptList.slice()
+        else this.cmptSelected = this.resourceDetail.resrcCmptList.slice()
       },
       toggleAllData(){
         if (this.dataSelected.length != 0) this.dataSelected = []
-        else this.dataSelected = this.resourceInfo.resrcDataList.slice()
+        else this.dataSelected = this.resourceDetail.resrcDataList.slice()
       },
       toggleAllApi(){
         if (this.apiSelected.length != 0) this.apiSelected = []
-        else this.apiSelected = this.resourceInfo.resrcApiList.slice()
+        else this.apiSelected = this.resourceDetail.resrcApiList.slice()
       },
 
       apply(){
-        console.log('appId:'+this.appId);
+        console.log('orderId:'+this.orderId);
         var applyInfo = {
-          appId:"",
+          orderId:"",
           userId:"",
           cmptList:[],
           dataList:[],
           apiList:[]
         };
-        applyInfo.appId = this.appId;
+        applyInfo.appId = this.orderId;
         applyInfo.userId = this.$cookie.get("userId");
         applyInfo.cmptList = this.cmptSelected;
         applyInfo.dataList = this.dataSelected;
         applyInfo.apiList = this.apiSelected;
 
         OrderService.createOrder(applyInfo).then((res) => {
-          this.$router.push({name:'IsvAppDetail',params:{app_id:this.appId}})
+          this.$router.push({name:'IsvAppDetail',params:{app_id:this.orderId}})
         }).catch((err) => {
           // console.log(err)
           let errMsg = (err.response) ? err.response.data.message : '服务器连接出错'

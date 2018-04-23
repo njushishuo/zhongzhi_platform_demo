@@ -11,29 +11,29 @@
         <v-layout row wrap>
           <v-flex xs4 offset-xs1>
             <span  class="grey--text">应用名称：</span>
-            <span>{{this.appVo.name}}</span>
+            <span>{{this.orderVo.name}}</span>
           </v-flex>
           <v-flex xs4>
             <span  class="grey--text">应用类型：</span>
-            <span>{{this.appVo.type}}</span>
+            <span>{{this.orderVo.type}}</span>
           </v-flex>
         </v-layout>
 
         <v-layout row wrap>
           <v-flex xs4 offset-xs1>
             <span  class="grey--text">部门名称：</span>
-            <span  >{{this.appVo.deptName}}</span>
+            <span  >{{this.orderVo.deptName}}</span>
           </v-flex>
           <v-flex xs4>
             <span  class="grey--text">部门编号： </span>
-            <span  >{{this.appVo.deptCode}}</span>
+            <span  >{{this.orderVo.deptCode}}</span>
           </v-flex>
         </v-layout>
 
         <v-layout row wrap>
           <v-flex xs10 offset-xs1>
             <span  class="grey--text">应用描述：</span>
-            <span>{{this.appVo.description}}</span>
+            <span>{{this.orderVo.description}}</span>
           </v-flex>
         </v-layout>
 
@@ -118,14 +118,14 @@
       name: "AppDetail",
       data(){
         return{
-          appId:this.$route.params.app_id,
-          appVo:{
+          orderId:this.$route.params.app_id,
+          orderVo:{
             name:"",
             type:"",
             description:"",
             deptName:"",
             deptCode:"",
-            resourceInfo: {
+            resourceDetail: {
               resrcCmptList : [],
               resrcDataList: [],
               resrcApiList:[]
@@ -161,12 +161,12 @@
 
       methods:{
         fetchData(){
-          AppService.getAppDetail(this.appId).then((res) => {
+          AppService.getAppDetail(this.orderId).then((res) => {
             this.appVo = res.data;
-            if(this.appVo.resourceInfo != null){
-              this.cmptItems = this.appVo.resourceInfo.resrcCmptList;
-              this.dataItems = this.appVo.resourceInfo.resrcDataList;
-              this.apiItems  = this.appVo.resourceInfo.resrcApiList;
+            if(this.orderVo.resourceDetail != null){
+              this.cmptItems = this.orderVo.resourceDetail.resrcCmptList;
+              this.dataItems = this.orderVo.resourceDetail.resrcDataList;
+              this.apiItems  = this.orderVo.resourceDetail.resrcApiList;
             }
             console.log("appvo is " +appVo.name)
             console.log(appVo.name)
@@ -177,7 +177,7 @@
         },
 
         jumpToApplyPage(){
-          this.$router.push({name:'IsvAppResourceApply', params:{app_id:this.appId}})
+          this.$router.push({name:'IsvAppResourceApply', params:{app_id:this.orderId}})
         }
       },
 

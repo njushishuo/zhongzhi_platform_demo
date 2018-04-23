@@ -22,23 +22,17 @@
         <v-data-table  v-bind:headers="headers" v-bind:items="items"  hide-actions class=" red elevation-1 text-xs-left ">
 
           <template slot="items" slot-scope="props" class="body-2">
-            <tr  @click = "showAppDetail(props.item.id)">
-              <td class="text-xs-left">{{ props.item.name }}</td>
-              <td class="text-xs-left">{{ props.item.type}}</td>
+            <tr  @click = "showOrderDetail(props.item.id)">
+              <td class="text-xs-left">{{ props.item.id }}</td>
+              <td class="text-xs-left">{{ props.item.appName }}</td>
+              <td class="text-xs-left">{{ props.item.userName }}</td>
               <td class="text-xs-left">{{ props.item.deptName}}</td>
-              <td class="text-xs-left">{{ props.item.deptCode}}</td>
-              <td class="text-xs-left">
-                <v-btn fab small class="cyan" @click.native="remove(props.item)">
-                  <v-icon>delete</v-icon>
-                </v-btn>
-              </td>
+              <td class="text-xs-left">{{ props.item.createTime}}</td>
             </tr>
           </template>
         </v-data-table>
       </v-card>
     </v-flex>
-
-    <confirm-dialog :dialog="dialog" :dialogTitle="dialogTitle" :dialogText="dialogText" @onConfirm="onConfirm" @onCancel="onCancel" ></confirm-dialog>
   </v-container>
 </template>
 <script>
@@ -57,38 +51,20 @@
         dialogText: "是否要删除该工单?",
 
         headers: [
-          { text: "工单号", left: true, value: "name",sortable: false, },
-          { text: "申请人", value: "type" ,sortable: false,},
-          { text: "申请部门", value: "deptName" ,sortable: false,},
-          { text: "申请时间", value: "deptCode",sortable: false,},
-          { text: "操作", value: "",sortable: false,}
+          { text: "工单号", left: true,sortable: false, },
+          { text: "应用名称", left: true, sortable: false, },
+          { text: "申请人", left: true,sortable: false,},
+          { text: "申请部门",left: true, sortable: false,},
+          { text: "申请时间",left: true, sortable: false,},
         ],
         items:[],
 
-        appId: "",
+        orderId: "",
       };
     },
     methods: {
       print () {
         window.print();
-      },
-      edit (item) {
-
-      },
-      add () {
-        // this.$router.push("NewProduct");
-      },
-      remove (item) {
-        this.appId = item.id;
-        this.dialog = true;
-      },
-      onConfirm () {
-
-        this.dialog = false;
-      },
-      onCancel () {
-        this.productId = "";
-        this.dialog = false;
       },
 
       loadData(){
@@ -102,12 +78,10 @@
         })
       },
 
-      showAppDetail(orderId){
+      showOrderDetail(orderId){
         this.$router.push({name:'IsvOrderDetail',params:{ order_id :orderId}})
       }
     },
-
-
     created () {
       this.loadData()
     }

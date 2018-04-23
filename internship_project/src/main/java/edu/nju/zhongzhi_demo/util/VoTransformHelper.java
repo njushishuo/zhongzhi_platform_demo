@@ -23,7 +23,7 @@ public class VoTransformHelper {
         resourceVo.id = resource.getId();
         resourceVo.name = resource.getName();
         resourceVo.resourceType = resource.getResourceType();
-        resourceVo.departName = resource.getDepartment().getName();
+        resourceVo.deptName = resource.getDepartment().getName();
         resourceVo.auditDeptName =  this.departmentRepo.getOne(workOrderRsrc.getReviewDeptId()).getName();
         if(workOrderRsrc.getReviewUserId() != null){
             resourceVo.auditorName = this.accountRepo.getOne(workOrderRsrc.getReviewUserId()).getUsername();

@@ -7,7 +7,7 @@ public class ResourceVo {
     public int id;
     public String name;
     public ResourceType resourceType;
-    public String departName;
+    public String deptName;
     public String auditDeptName;
     public String auditorName;
     public String reviewStatus;

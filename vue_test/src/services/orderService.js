@@ -7,7 +7,7 @@ export default {
   },
 
   isvGetOrderDetail(woId){
-    return Axios.get('/isv/workorder/'+woId)
+    return Axios.get('/isv/workOrder/'+woId)
   },
 
   createOrder(params){

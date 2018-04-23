@@ -60,15 +60,15 @@
         dialogText: "是否要删除该应用?",
 
         headers: [
-          { text: "应用名称", left: true, value: "name",sortable: false, },
-          { text: "应用类别", value: "type" ,sortable: false,},
-          { text: "部门名称", value: "deptName" ,sortable: false,},
-          { text: "部门编号", value: "deptCode",sortable: false,},
-          { text: "操作", value: "",sortable: false,}
+          { text: "应用名称", left: true, sortable: false, },
+          { text: "应用类别", left: true,sortable: false,},
+          { text: "部门名称",left: true, sortable: false,},
+          { text: "部门编号",left: true, sortable: false,},
+          { text: "操作", left: true,sortable: false,}
         ],
         items:[],
 
-        appId: "",
+        orderId: "",
       };
     },
     methods: {
