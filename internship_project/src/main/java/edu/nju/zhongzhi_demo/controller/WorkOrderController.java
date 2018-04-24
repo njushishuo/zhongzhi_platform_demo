@@ -133,8 +133,11 @@ public class WorkOrderController {
         return this.workOrderService.getWorkOrderDetailForAuditor(user,workOrder);
     }
 
-    public String reviewOrder(){
-        return "";
+    @PostMapping("/auditor/{userId}/review")
+    @Transactional
+    public void reviewOrder(@PathVariable int userId , @RequestBody WorkOrderDetailVo detailVo){
+
+        this.workOrderService.reviewOrder(userId , detailVo);
     }
 
 

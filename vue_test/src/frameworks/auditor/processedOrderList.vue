@@ -59,7 +59,7 @@
 
         loadProcessedData(){
           var userId = this.$cookie.get('userId')
-          var status = "wait_review"
+          var status = "processed"
           WorkOrderService.auditorGetMyOrders(userId,status).then((res) => {
             this.items = res.data;
             console.log(this.items)

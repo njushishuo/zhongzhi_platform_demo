@@ -9,6 +9,7 @@ import IsvAppResourceApply from '@/frameworks/isv/resourceApply'
 import IsvOrderList from '@/frameworks/isv/isvOrderList'
 import IsvOrderDetail from '@/frameworks/isv/isvOrderDetail'
 import AuditorOrderDetail from '@/frameworks/auditor/auditorOrderDetail'
+import AuditorOrderReview from '@/frameworks/auditor/auditorOrderReview'
 import ProcessedOrderList from '@/frameworks/auditor/processedOrderList'
 import UnprocessedOrderList from '@/frameworks/auditor/unprocessedOrderList'
 
@@ -68,8 +69,14 @@ export default new Router({
           name: 'ProcessedOrderList',
           component:ProcessedOrderList,
         },
+
         {
-          path: '/auditor/order/:order_id',
+          path: '/auditor/order/:order_id/review',
+          name: 'AuditorOrderReview',
+          component:AuditorOrderReview,
+        },
+        {
+          path: '/auditor/order/:order_id/detail',
           name: 'AuditorOrderDetail',
           component:AuditorOrderDetail,
         },

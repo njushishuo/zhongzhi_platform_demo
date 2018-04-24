@@ -5,11 +5,15 @@ import edu.nju.zhongzhi_demo.dao.AppRepo;
 import edu.nju.zhongzhi_demo.dao.DepartmentRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRsrcRepo;
+import edu.nju.zhongzhi_demo.entity.Resource;
 import edu.nju.zhongzhi_demo.entity.User;
 import edu.nju.zhongzhi_demo.entity.WorkOrder;
+import edu.nju.zhongzhi_demo.enums.ResourceStatus;
 import edu.nju.zhongzhi_demo.enums.Role;
-import edu.nju.zhongzhi_demo.model.vo.WorkOrderDetailVo;
-import edu.nju.zhongzhi_demo.model.vo.WorkOrderVo;
+import edu.nju.zhongzhi_demo.enums.WorkOrderReviewResult;
+import edu.nju.zhongzhi_demo.enums.WorkOrderStatus;
+import edu.nju.zhongzhi_demo.model.vo.*;
+import edu.nju.zhongzhi_demo.model.wrapper.ResourceDetail;
 import edu.nju.zhongzhi_demo.util.DateHelper;
 import edu.nju.zhongzhi_demo.util.EnumTranslator;
 import org.hibernate.jdbc.Work;
@@ -160,5 +164,68 @@ public class WorkOrderService {
         return vo;
     }
 
+
+    public void reviewOrder(int userId, WorkOrderDetailVo detailVo) {
+        int workOrderId = detailVo.id;
+        List<ResrcCmptDetailVo> cmptDetailVoList =  detailVo.resourceDetail.resrcCmptList;
+        List<ResrcDataDetailVo> dataDetailVoList =  detailVo.resourceDetail.resrcDataList;
+        List<ResrcApiDetailVo> apiDetailVoList =  detailVo.resourceDetail.resrcApiList;
+        if(cmptDetailVoList !=null && !cmptDetailVoList.isEmpty()){
+            this.updateResrcStatus(userId,workOrderId,cmptDetailVoList);
+        }
+
+        if(dataDetailVoList !=null && !dataDetailVoList.isEmpty()){
+            this.updateResrcStatus(userId,workOrderId,dataDetailVoList);
+        }
+
+        if(apiDetailVoList !=null && !apiDetailVoList.isEmpty()){
+            this.updateResrcStatus(userId,workOrderId,apiDetailVoList);
+        }
+
+        this.updateWorkOrderStatus(workOrderId);
+    }
+
+
+
+    private void  updateResrcStatus (int auditorId, int workOrderId , List<? extends ResourceVo> resrcDetailVoList){
+        if(resrcDetailVoList != null){
+            List<Integer> approvedResrcIds = new ArrayList<>();
+            List<Integer> deniedResrcIds = new ArrayList<>();
+            for(ResourceVo vo : resrcDetailVoList){
+                if(vo.approved){
+                    approvedResrcIds.add(vo.id);
+                }else{
+                    deniedResrcIds.add(vo.id);
+                }
+            }
+            if(!approvedResrcIds.isEmpty()){
+                this.workOrderRsrcRepo.setReviewStatus(auditorId,workOrderId,approvedResrcIds,ResourceStatus.approved);
+            }
+
+            if(!deniedResrcIds.isEmpty()){
+                this.workOrderRsrcRepo.setReviewStatus(auditorId,workOrderId,deniedResrcIds,ResourceStatus.rejected);
+            }
+        }
+    }
+    private void  updateWorkOrderStatus(int workOrderId){
+        if(this.workOrderRsrcRepo.getUnprocessResrcNum(workOrderId) == 0){
+            WorkOrder workOrder = this.workOrderRepo.getOne(workOrderId);
+            int all = this.workOrderRsrcRepo.getResrcNum(workOrderId);
+            int pass = this.workOrderRsrcRepo.getPassedResrcNum(workOrderId);
+            WorkOrderReviewResult reviewResult;
+            if(pass == all){
+               reviewResult = WorkOrderReviewResult.all_pass;
+            }else if(pass == 0){
+                reviewResult = WorkOrderReviewResult.all_deny;
+            }else{
+                reviewResult = WorkOrderReviewResult.part_pass;
+            }
+            workOrder.setStatus(WorkOrderStatus.processed);
+            workOrder.setReviewResult(reviewResult);
+            this.workOrderRepo.saveAndFlush(workOrder);
+        }
+
+
+    }
 
 }

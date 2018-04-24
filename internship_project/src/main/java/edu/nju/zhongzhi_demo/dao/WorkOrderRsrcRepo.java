@@ -3,6 +3,7 @@ package edu.nju.zhongzhi_demo.dao;
 import edu.nju.zhongzhi_demo.entity.*;
 import edu.nju.zhongzhi_demo.enums.ResourceStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -35,4 +36,16 @@ public interface WorkOrderRsrcRepo extends JpaRepository<WorkOrderRsrc,Integer> 
     @Query("select distinct workOrderId from WorkOrderRsrc wor where reviewDeptId = ?1 and (resrcType = 'data' or resrcType = 'api')and resrcStatus is not null ")
     List<Integer> getProcessedDataWorkOrdersByAuditDeptId(int deptId);
 
+    @Modifying
+    @Query("update WorkOrderRsrc wor set wor.resrcStatus = ?4 , wor.reviewUserId = ?1 where wor.workOrderId = ?2 and wor.resrcId in ?3")
+    void setReviewStatus(int auditorId, int orderId, List<Integer> resourceIds, ResourceStatus resourceStatus);
+
+    @Query("select count (wor.id) from WorkOrderRsrc wor where wor.workOrderId = ?1 and wor.resrcStatus = null")
+    int getUnprocessResrcNum(int workOrder);
+
+    @Query("select count (wor.id) from WorkOrderRsrc wor where wor.workOrderId = ?1 and wor.resrcStatus = 'approved'")
+    int getPassedResrcNum(int workOrder);
+
+    @Query("select count (wor.id) from WorkOrderRsrc wor where wor.workOrderId = ?1")
+    int getResrcNum(int workOrder);
 }

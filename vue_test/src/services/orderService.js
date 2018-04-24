@@ -20,5 +20,9 @@ export default {
 
   auditorGetOrderDetail(userId,woId){
     return Axios.get('/auditor/'+userId+'/workOrder/'+woId)
+  },
+
+  review(userId,para){
+    return Axios.post('/auditor/'+userId+'/review',para)
   }
 }

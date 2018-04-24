@@ -104,8 +104,8 @@
             action: 'shopping_cart',
             title: '工单管理',
             items: [
-              { title: '待审核' ,link:{name:'ProcessedOrderList'}},
-              { title: '已处理' ,link:{name:'UnprocessedOrderList'}}
+              { title: '待审核' ,link:{name:'UnprocessedOrderList'}},
+              { title: '已处理' ,link:{name:'ProcessedOrderList'}}
             ]
           },
         ],

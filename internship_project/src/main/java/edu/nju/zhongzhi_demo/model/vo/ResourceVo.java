@@ -12,4 +12,5 @@ public class ResourceVo {
     public String auditorName;
     public String reviewStatus;
     public String reviewTime;
+    public boolean approved = false;
 }

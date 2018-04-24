@@ -150,7 +150,7 @@
     data(){
       return{
         orderId:this.$route.params.app_id,
-        resourceDetail: {
+        resourceInfo: {
           resrcCmptList : [],
           resrcDataList: [],
           resrcApiList:[]

@@ -3,6 +3,7 @@ package edu.nju.zhongzhi_demo.util;
 import edu.nju.zhongzhi_demo.dao.AccountRepo;
 import edu.nju.zhongzhi_demo.dao.DepartmentRepo;
 import edu.nju.zhongzhi_demo.entity.*;
+import edu.nju.zhongzhi_demo.enums.ResourceStatus;
 import edu.nju.zhongzhi_demo.model.vo.ResourceVo;
 import edu.nju.zhongzhi_demo.model.vo.ResrcApiDetailVo;
 import edu.nju.zhongzhi_demo.model.vo.ResrcCmptDetailVo;
@@ -33,6 +34,9 @@ public class VoTransformHelper {
             resourceVo.reviewTime = DateHelper.TimestampToString(workOrderRsrc.getReviewTime());
         }
 
+        if(workOrderRsrc.getResrcStatus() != null && workOrderRsrc.getResrcStatus()==ResourceStatus.approved){
+            resourceVo.approved = true;
+        }
     }
 
     public ResrcCmptDetailVo toCmptDetailVo(ResrcCmpt resrcCmpt , WorkOrderRsrc workOrderRsrc){

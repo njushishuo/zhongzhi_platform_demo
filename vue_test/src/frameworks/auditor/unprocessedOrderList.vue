@@ -69,7 +69,7 @@
           })
         },
         showOrderDetail(orderId){
-          this.$router.push({name:'AuditorOrderDetail',params:{ order_id :orderId}})
+          this.$router.push({name:'AuditorOrderReview',params:{ order_id :orderId}})
         }
       },
       created () {
