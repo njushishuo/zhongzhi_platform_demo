@@ -61,8 +61,8 @@
           var userId = this.$cookie.get('userId')
           var status = "wait_review"
           WorkOrderService.auditorGetMyOrders(userId,status).then((res) => {
-            this.items1 = res.data;
-            console.log(this.items1)
+            this.items = res.data;
+            console.log(this.items)
           }).catch((err) => {
             let errMsg = (err.response) ? err.response.data.message : '服务器连接出错'
             console.log(errMsg)

@@ -5,21 +5,20 @@ import edu.nju.zhongzhi_demo.dao.AppRepo;
 import edu.nju.zhongzhi_demo.dao.DepartmentRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRsrcRepo;
-import edu.nju.zhongzhi_demo.entity.Resource;
 import edu.nju.zhongzhi_demo.entity.User;
 import edu.nju.zhongzhi_demo.entity.WorkOrder;
+import edu.nju.zhongzhi_demo.entity.WorkOrderRsrc;
 import edu.nju.zhongzhi_demo.enums.ResourceStatus;
 import edu.nju.zhongzhi_demo.enums.Role;
 import edu.nju.zhongzhi_demo.enums.WorkOrderReviewResult;
 import edu.nju.zhongzhi_demo.enums.WorkOrderStatus;
 import edu.nju.zhongzhi_demo.model.vo.*;
-import edu.nju.zhongzhi_demo.model.wrapper.ResourceDetail;
 import edu.nju.zhongzhi_demo.util.DateHelper;
 import edu.nju.zhongzhi_demo.util.EnumTranslator;
-import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -78,8 +77,8 @@ public class WorkOrderService {
         WorkOrderVo workOrderVo = this.transform(workOrder);
         WorkOrderDetailVo vo = new WorkOrderDetailVo(workOrderVo);
 
-        vo.status = EnumTranslator.translate(workOrder.getStatus());
-        vo.reviewStatus = EnumTranslator.translate(workOrder.getReviewResult());
+        vo.status = EnumTranslator.translateOrderStatus(workOrder.getStatus());
+        vo.reviewStatus = EnumTranslator.translateReviewResult(workOrder.getReviewResult());
         vo.resourceDetail = this.resourceService.getResourceDetailByWorkOrderId(id);
         return vo;
     }
@@ -138,12 +137,52 @@ public class WorkOrderService {
 
         WorkOrderVo workOrderVo = this.transform(workOrder);
         WorkOrderDetailVo detailVo = new WorkOrderDetailVo(workOrderVo);
+        this.setWorkOrderStatusForAuditor(auditor,workOrder,detailVo);
 
-        detailVo.status = EnumTranslator.translate(workOrder.getStatus());
-        detailVo.reviewStatus = EnumTranslator.translate(workOrder.getReviewResult());
         detailVo.resourceDetail = this.resourceService.
                 getResourceDetailByWorkOrderIdAndRole(workOrder.getId(),auditor.getRole());
         return detailVo;
+    }
+
+    private void setWorkOrderStatusForAuditor(User auditor , WorkOrder workOrder,WorkOrderDetailVo detailVo){
+        List<WorkOrderRsrc> workOrderRsrcList = null;
+        if(auditor.getRole()  == Role.cmpt_conductor){
+            workOrderRsrcList = this.workOrderRsrcRepo.
+                    getCmptRecordByWorkOrderIdAndReviewDeptId(workOrder.getId(),auditor.getDeptId());
+        }else if(auditor.getRole()  == Role.data_conductor){
+            workOrderRsrcList = this.workOrderRsrcRepo.
+                    getDataRecordByWorkOrderIdAndReviewDeptId(workOrder.getId(),auditor.getDeptId());
+        }
+
+
+        if(workOrderRsrcList == null || workOrderRsrcList.isEmpty()){
+            throw new RuntimeException(Config.ORDER_ERROR);
+        }
+
+        if(workOrderRsrcList.get(0).getResrcStatus() == null){
+            detailVo.status = EnumTranslator.translateOrderStatus(WorkOrderStatus.wait_review);
+            detailVo.reviewStatus = EnumTranslator.translateReviewResult(null);
+            detailVo.reviewTime = EnumTranslator.translateReviewTime(null);
+        }else{
+            detailVo.status = EnumTranslator.translateOrderStatus(WorkOrderStatus.processed);
+            int pass = 0;
+            for(WorkOrderRsrc workOrderRsrc : workOrderRsrcList){
+                if(workOrderRsrc.getResrcStatus() == ResourceStatus.approved){
+                    pass++;
+                }
+            }
+
+            WorkOrderReviewResult reviewResult;
+            if(pass == 0){
+                reviewResult = WorkOrderReviewResult.all_deny;
+            }else if(pass == workOrderRsrcList.size()){
+                reviewResult = WorkOrderReviewResult.all_pass;
+            }else{
+                reviewResult = WorkOrderReviewResult.part_pass;
+            }
+            detailVo.reviewStatus = EnumTranslator.translateReviewResult(reviewResult);
+            detailVo.reviewTime = EnumTranslator.translateReviewTime(workOrderRsrcList.get(0).getReviewTime());
+        }
     }
 
 
@@ -160,7 +199,7 @@ public class WorkOrderService {
         vo.userName = userName;
         vo.deptName = deptName;
         vo.createTime = DateHelper.TimestampToString(workOrder.getCreatedTime());
-        vo.reviewTime = EnumTranslator.translate(workOrder.getReviewTime());
+        vo.reviewTime = EnumTranslator.translateReviewTime(workOrder.getReviewTime());
         return vo;
     }
 
@@ -187,11 +226,11 @@ public class WorkOrderService {
 
 
 
-    private void  updateResrcStatus (int auditorId, int workOrderId , List<? extends ResourceVo> resrcDetailVoList){
+    private void  updateResrcStatus (int auditorId, int workOrderId , List<? extends ResourceDetailVo> resrcDetailVoList){
         if(resrcDetailVoList != null){
             List<Integer> approvedResrcIds = new ArrayList<>();
             List<Integer> deniedResrcIds = new ArrayList<>();
-            for(ResourceVo vo : resrcDetailVoList){
+            for(ResourceDetailVo vo : resrcDetailVoList){
                 if(vo.approved){
                     approvedResrcIds.add(vo.id);
                 }else{
@@ -222,6 +261,7 @@ public class WorkOrderService {
             }
             workOrder.setStatus(WorkOrderStatus.processed);
             workOrder.setReviewResult(reviewResult);
+            workOrder.setReviewTime(new Timestamp(System.currentTimeMillis()));
             this.workOrderRepo.saveAndFlush(workOrder);
         }
 

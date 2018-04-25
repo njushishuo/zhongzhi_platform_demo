@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 
 public class EnumTranslator {
 
-    public static String translate(WorkOrderStatus workOrderStatus){
+    public static String translateOrderStatus(WorkOrderStatus workOrderStatus){
         switch (workOrderStatus) {
             case wait_review:
                 return "待审核";
@@ -17,7 +17,7 @@ public class EnumTranslator {
     }
 
 
-    public static String translate(WorkOrderReviewResult workOrderReviewResult){
+    public static String translateReviewResult(WorkOrderReviewResult workOrderReviewResult){
         if(workOrderReviewResult == null){
             return "暂未审核";
         }
@@ -34,7 +34,7 @@ public class EnumTranslator {
 
     }
 
-    public static String translate(ResourceStatus resourceStatus){
+    public static String translateResrcStatus(ResourceStatus resourceStatus){
 
         if(resourceStatus == null){
             return "暂未审核";
@@ -50,7 +50,7 @@ public class EnumTranslator {
         return "";
     }
 
-    public static String translate(Timestamp reviewTime){
+    public static String translateReviewTime(Timestamp reviewTime){
         if(reviewTime == null){
             return "暂未审核";
         }

@@ -6,7 +6,6 @@ import edu.nju.zhongzhi_demo.dao.WorkOrderRsrcRepo;
 import edu.nju.zhongzhi_demo.entity.*;
 import edu.nju.zhongzhi_demo.enums.ResourceType;
 import edu.nju.zhongzhi_demo.enums.WorkOrderStatus;
-import edu.nju.zhongzhi_demo.model.para.StatusPara;
 import edu.nju.zhongzhi_demo.model.para.WorkOrderPara;
 import edu.nju.zhongzhi_demo.model.vo.WorkOrderDetailVo;
 import edu.nju.zhongzhi_demo.model.vo.WorkOrderVo;
@@ -58,7 +57,7 @@ public class WorkOrderController {
 
         if(workOrderPara.cmptList != null && !workOrderPara.cmptList.isEmpty()){
             for(ResrcCmpt resrcCmpt: workOrderPara.cmptList){
-                int auditDeptId = this.departmentService.getAuditDeptIdForCmptRsrc(resrcCmpt.getDepartment().getId());
+                int auditDeptId = this.departmentService.getAuditDeptIdForCmptRsrc(resrcCmpt.getDeptId());
                 WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
                 workOrderRsrc.setAppId(workOrderPara.appId);
                 workOrderRsrc.setWorkOrderId(workOrder.getId());
@@ -71,7 +70,7 @@ public class WorkOrderController {
 
         if(workOrderPara.dataList !=null && !workOrderPara.dataList.isEmpty()){
             for(ResrcData resrcData: workOrderPara.dataList){
-                int auditDeptId = this.departmentService.getAuditDeptIdForDataRsrc(resrcData.getDepartment().getId());
+                int auditDeptId = this.departmentService.getAuditDeptIdForDataRsrc(resrcData.getDeptId());
                 WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
                 workOrderRsrc.setAppId(workOrderPara.appId);
                 workOrderRsrc.setWorkOrderId(workOrder.getId());
@@ -84,7 +83,7 @@ public class WorkOrderController {
 
         if(workOrderPara.apiList !=null && !workOrderPara.apiList.isEmpty()){
             for(ResrcApi resrcApi: workOrderPara.apiList){
-                int auditDeptId = this.departmentService.getAuditDeptIdForDataRsrc(resrcApi.getDepartment().getId());
+                int auditDeptId = this.departmentService.getAuditDeptIdForDataRsrc(resrcApi.getDeptId());
                 WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
                 workOrderRsrc.setAppId(workOrderPara.appId);
                 workOrderRsrc.setWorkOrderId(workOrder.getId());

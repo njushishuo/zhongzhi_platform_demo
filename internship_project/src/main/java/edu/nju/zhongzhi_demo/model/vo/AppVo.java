@@ -3,8 +3,10 @@ package edu.nju.zhongzhi_demo.model.vo;
 import edu.nju.zhongzhi_demo.entity.App;
 import edu.nju.zhongzhi_demo.model.wrapper.ResourceInfo;
 
+import java.io.Serializable;
 
-public class AppVo extends App {
+
+public class AppVo extends App{
 
     public String deptName ;
     public String deptCode;

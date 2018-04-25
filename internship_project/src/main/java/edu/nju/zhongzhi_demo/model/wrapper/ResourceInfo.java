@@ -1,9 +1,8 @@
 package edu.nju.zhongzhi_demo.model.wrapper;
 
-import edu.nju.zhongzhi_demo.entity.ResrcApi;
-import edu.nju.zhongzhi_demo.entity.ResrcCmpt;
-import edu.nju.zhongzhi_demo.entity.ResrcData;
-
+import edu.nju.zhongzhi_demo.model.vo.ResrcApiVo;
+import edu.nju.zhongzhi_demo.model.vo.ResrcCmptVo;
+import edu.nju.zhongzhi_demo.model.vo.ResrcDataVo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +14,7 @@ public class ResourceInfo {
         this.resrcDataList = new ArrayList<>();
     }
 
-    public List<ResrcCmpt> resrcCmptList;
-    public List<ResrcData> resrcDataList;
-    public List<ResrcApi> resrcApiList;
+    public List<ResrcCmptVo> resrcCmptList;
+    public List<ResrcDataVo> resrcDataList;
+    public List<ResrcApiVo> resrcApiList;
 }

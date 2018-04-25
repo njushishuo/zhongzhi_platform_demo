@@ -97,6 +97,7 @@
               <td class="text-xs-left">{{ props.item.dataType}}</td>
               <td class="text-xs-left">{{ props.item.updateCycle}}</td>
               <td class="text-xs-left">{{ props.item.sqdwName}}</td>
+              <td><v-switch v-model="props.item.approved" ></v-switch></td>
             </tr>
           </template>
         </v-data-table>
@@ -113,6 +114,7 @@
               <td class="text-xs-left">{{ props.item.name }}</td>
               <td class="text-xs-left">{{ props.item.apiLevel}}</td>
               <td class="text-xs-left">{{ props.item.deptName}}</td>
+              <td><v-switch v-model="props.item.approved" ></v-switch></td>
             </tr>
           </template>
         </v-data-table>

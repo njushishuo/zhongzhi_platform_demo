@@ -48,4 +48,11 @@ public interface WorkOrderRsrcRepo extends JpaRepository<WorkOrderRsrc,Integer> 
 
     @Query("select count (wor.id) from WorkOrderRsrc wor where wor.workOrderId = ?1")
     int getResrcNum(int workOrder);
+
+
+    @Query("select wor from WorkOrderRsrc wor where wor.workOrderId = ?1 and wor.reviewDeptId = ?2 and resrcType = 'compute' ")
+    List<WorkOrderRsrc> getCmptRecordByWorkOrderIdAndReviewDeptId(int workOrderId , int auditorDeptId);
+
+    @Query("select wor from WorkOrderRsrc wor where wor.workOrderId = ?1 and wor.reviewDeptId = ?2  and (resrcType = 'api' or resrcType = 'data')")
+    List<WorkOrderRsrc> getDataRecordByWorkOrderIdAndReviewDeptId(int workOrderId , int auditorDeptId);
 }

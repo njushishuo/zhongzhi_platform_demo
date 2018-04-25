@@ -4,10 +4,7 @@ import edu.nju.zhongzhi_demo.dao.AccountRepo;
 import edu.nju.zhongzhi_demo.dao.DepartmentRepo;
 import edu.nju.zhongzhi_demo.entity.*;
 import edu.nju.zhongzhi_demo.enums.ResourceStatus;
-import edu.nju.zhongzhi_demo.model.vo.ResourceVo;
-import edu.nju.zhongzhi_demo.model.vo.ResrcApiDetailVo;
-import edu.nju.zhongzhi_demo.model.vo.ResrcCmptDetailVo;
-import edu.nju.zhongzhi_demo.model.vo.ResrcDataDetailVo;
+import edu.nju.zhongzhi_demo.model.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,28 +17,44 @@ public class VoTransformHelper {
     @Autowired
     AccountRepo accountRepo;
 
-    public void toDetailVo(Resource resource , ResourceVo resourceVo , WorkOrderRsrc workOrderRsrc){
+    public void toResourceVo(Resource resource , ResourceVo resourceVo){
         resourceVo.id = resource.getId();
         resourceVo.name = resource.getName();
         resourceVo.resourceType = resource.getResourceType();
-        resourceVo.deptName = resource.getDepartment().getName();
-        resourceVo.auditDeptName =  this.departmentRepo.getOne(workOrderRsrc.getReviewDeptId()).getName();
+        resourceVo.deptName = this.departmentRepo.getOne(resource.getDeptId()).getName();
+    }
+
+    public void toDetailVo(Resource resource , ResourceDetailVo resourceDetailVo, WorkOrderRsrc workOrderRsrc){
+        resourceDetailVo.id = resource.getId();
+        resourceDetailVo.name = resource.getName();
+        resourceDetailVo.resourceType = resource.getResourceType();
+        resourceDetailVo.deptName = this.departmentRepo.getOne(resource.getDeptId()).getName();
+        resourceDetailVo.auditDeptName =  this.departmentRepo.getOne(workOrderRsrc.getReviewDeptId()).getName();
         if(workOrderRsrc.getReviewUserId() != null){
-            resourceVo.auditorName = this.accountRepo.getOne(workOrderRsrc.getReviewUserId()).getUsername();
+            resourceDetailVo.auditorName = this.accountRepo.getOne(workOrderRsrc.getReviewUserId()).getUsername();
         }
-        resourceVo.reviewStatus = EnumTranslator.translate(workOrderRsrc.getResrcStatus());
+        resourceDetailVo.resrcStatus = EnumTranslator.translateResrcStatus(workOrderRsrc.getResrcStatus());
         if(workOrderRsrc.getReviewTime()!= null){
-            resourceVo.reviewTime = DateHelper.TimestampToString(workOrderRsrc.getReviewTime());
+            resourceDetailVo.reviewTime = DateHelper.TimestampToString(workOrderRsrc.getReviewTime());
         }
 
         if(workOrderRsrc.getResrcStatus() != null && workOrderRsrc.getResrcStatus()==ResourceStatus.approved){
-            resourceVo.approved = true;
+            resourceDetailVo.approved = true;
         }
     }
 
     public ResrcCmptDetailVo toCmptDetailVo(ResrcCmpt resrcCmpt , WorkOrderRsrc workOrderRsrc){
         ResrcCmptDetailVo vo = new ResrcCmptDetailVo();
         this.toDetailVo(resrcCmpt,vo,workOrderRsrc);
+        vo.cmptType = resrcCmpt.getCmptType();
+        vo.config = resrcCmpt.getConfig();
+        vo.count = resrcCmpt.getCount();
+        return vo;
+    }
+
+    public ResrcCmptVo toCmptVo(ResrcCmpt resrcCmpt ){
+        ResrcCmptVo vo = new ResrcCmptVo();
+        this.toResourceVo(resrcCmpt,vo);
         vo.cmptType = resrcCmpt.getCmptType();
         vo.config = resrcCmpt.getConfig();
         vo.count = resrcCmpt.getCount();
@@ -57,10 +70,28 @@ public class VoTransformHelper {
         return vo;
     }
 
+    public ResrcDataVo toDataVo(ResrcData resrcData){
+        ResrcDataVo vo = new ResrcDataVo();
+        this.toResourceVo(resrcData,vo);
+        vo.dataType = EnumTranslator.translate(resrcData.getDataType());
+        vo.sqdwName = resrcData.getSqdwName();
+        vo.updateCycle = resrcData.getUpdateCycle();
+        return vo;
+    }
+
+
     public ResrcApiDetailVo toApiDetailVo(ResrcApi resrcApi, WorkOrderRsrc workOrderRsrc){
         ResrcApiDetailVo vo = new ResrcApiDetailVo();
         this.toDetailVo(resrcApi,vo,workOrderRsrc);
         vo.apiLevel = EnumTranslator.translate(resrcApi.getApiLevel());
         return vo;
     }
+
+    public ResrcApiVo toApiVo(ResrcApi resrcApi){
+        ResrcApiVo vo = new ResrcApiVo();
+        this.toResourceVo(resrcApi,vo);
+        vo.apiLevel = EnumTranslator.translate(resrcApi.getApiLevel());
+        return vo;
+    }
+
 }

@@ -8,6 +8,10 @@ import edu.nju.zhongzhi_demo.entity.WorkOrderRsrc;
 import edu.nju.zhongzhi_demo.enums.ResourceStatus;
 import edu.nju.zhongzhi_demo.enums.ResourceType;
 import edu.nju.zhongzhi_demo.enums.Role;
+import edu.nju.zhongzhi_demo.model.vo.ResrcApiDetailVo;
+import edu.nju.zhongzhi_demo.model.vo.ResrcApiVo;
+import edu.nju.zhongzhi_demo.model.vo.ResrcCmptVo;
+import edu.nju.zhongzhi_demo.model.vo.ResrcDataVo;
 import edu.nju.zhongzhi_demo.model.wrapper.ResourceDetail;
 import edu.nju.zhongzhi_demo.model.wrapper.ResourceInfo;
 import edu.nju.zhongzhi_demo.util.VoTransformHelper;
@@ -108,15 +112,30 @@ public class ResourceService {
         }
 
         if(!cmptIds.isEmpty()){
-            resourceInfo.resrcCmptList.addAll(this.resrcCmptRepo.getResrcCmptByIdIn(cmptIds));
+            List<ResrcCmpt> resrcCmpts = this.resrcCmptRepo.getResrcCmptByIdIn(cmptIds);
+            List<ResrcCmptVo> resrcCmptVos = new ArrayList<>();
+            for(ResrcCmpt resrcCmpt : resrcCmpts){
+                resrcCmptVos.add(this.voTransformHelper.toCmptVo(resrcCmpt));
+            }
+            resourceInfo.resrcCmptList.addAll(resrcCmptVos);
         }
 
         if(!dataIds.isEmpty()){
-            resourceInfo.resrcDataList.addAll(this.resrcDataRepo.getResrcDataByIdIn(dataIds));
+            List<ResrcData> resrcDatas = this.resrcDataRepo.getResrcDataByIdIn(dataIds);
+            List<ResrcDataVo> resrcDataVos = new ArrayList<>();
+            for(ResrcData resrcData : resrcDatas){
+                resrcDataVos.add(this.voTransformHelper.toDataVo(resrcData));
+            }
+            resourceInfo.resrcDataList.addAll(resrcDataVos);
         }
 
         if(!apiIds.isEmpty()){
-            resourceInfo.resrcApiList.addAll(this.resrcApiRepo.getResrcApiByIdIn(apiIds));
+            List<ResrcApi> resrcApis = this.resrcApiRepo.getResrcApiByIdIn(apiIds);
+            List<ResrcApiVo> resrcApiVos = new ArrayList<>();
+            for(ResrcApi resrcApi : resrcApis){
+                resrcApiVos.add(this.voTransformHelper.toApiVo(resrcApi));
+            }
+            resourceInfo.resrcApiList.addAll(resrcApiVos);
         }
 
         return resourceInfo;

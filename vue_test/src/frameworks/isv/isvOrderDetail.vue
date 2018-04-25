@@ -78,7 +78,8 @@
               <td class="text-xs-left">{{ props.item.count}}</td>
               <td class="text-xs-left">{{ props.item.config}}</td>
               <td class="text-xs-left">{{ props.item.deptName}}</td>
-              <td class="text-xs-left">{{ props.item.reviewStatus}}</td>
+              <td v-if="props.item.approved" class="text-xs-left blue--text">通过</td>
+              <td v-if="!props.item.approved" class="text-xs-left red--text">未通过</td>
               <td class="text-xs-left">{{ props.item.auditorName == null ? "---" : props.item.auditorName}}</td>
               <td class="text-xs-left">{{ props.item.reviewTime == null ? "---" : props.item.reviewTime}}</td>
             </tr>
@@ -98,7 +99,8 @@
               <td class="text-xs-left">{{ props.item.dataType}}</td>
               <td class="text-xs-left">{{ props.item.updateCycle}}</td>
               <td class="text-xs-left">{{ props.item.sqdwName}}</td>
-              <td class="text-xs-left">{{ props.item.reviewStatus}}</td>
+              <td v-if="props.item.approved" class="text-xs-left blue--text">通过</td>
+              <td v-if="!props.item.approved" class="text-xs-left red--text">未通过</td>
               <td class="text-xs-left">{{ props.item.auditorName == null ? "---" : props.item.auditorName}}</td>
               <td class="text-xs-left">{{ props.item.reviewTime == null ? "---" : props.item.reviewTime}}</td>
             </tr>
@@ -117,7 +119,8 @@
               <td class="text-xs-left">{{ props.item.name }}</td>
               <td class="text-xs-left">{{ props.item.apiLevel}}</td>
               <td class="text-xs-left">{{ props.item.deptName}}</td>
-              <td class="text-xs-left">{{ props.item.reviewStatus}}</td>
+              <td v-if="props.item.approved" class="text-xs-left blue--text">通过</td>
+              <td v-if="!props.item.approved" class="text-xs-left red--text">未通过</td>
               <td class="text-xs-left">{{ props.item.auditorName == null ? "---" : props.item.auditorName}}</td>
               <td class="text-xs-left">{{ props.item.reviewTime == null ? "---" : props.item.reviewTime}}</td>
             </tr>

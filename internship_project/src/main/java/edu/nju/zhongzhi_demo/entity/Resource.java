@@ -11,7 +11,7 @@ public class Resource {
     private int id;
     private String name;
     private ResourceType resourceType;
-    private Department department;
+    private int deptId;
 
     @Id
     @Column(name = "id")
@@ -40,14 +40,14 @@ public class Resource {
         this.resourceType = resourceType;
     }
 
-    @ManyToOne()
-    @JoinColumn(name="dept_id")
-    public Department getDepartment() {
-        return department;
+    @Basic
+    @Column(name = "dept_id")
+    public int getDeptId() {
+        return deptId;
     }
 
-    public void setDepartment(Department department) {
-        this.department = department;
+    public void setDeptId(int deptId) {
+        this.deptId = deptId;
     }
 
 }

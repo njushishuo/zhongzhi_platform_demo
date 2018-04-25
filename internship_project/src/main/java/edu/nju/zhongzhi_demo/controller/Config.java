@@ -11,5 +11,7 @@ public class Config {
     public static String PARA_ERROR_USERID_IS_NULL = "userId is null";
     public static String PARA_ERROR_APPID_IS_NULL = "appId is null";
 
+    public static String ORDER_ERROR = "workorder review deptId not match ";
+
 
 }

@@ -11,29 +11,29 @@
         <v-layout row wrap>
           <v-flex xs4 offset-xs1>
             <span  class="grey--text">应用名称：</span>
-            <span>{{this.orderVo.name}}</span>
+            <span>{{this.appVo.name}}</span>
           </v-flex>
           <v-flex xs4>
             <span  class="grey--text">应用类型：</span>
-            <span>{{this.orderVo.type}}</span>
+            <span>{{this.appVo.type}}</span>
           </v-flex>
         </v-layout>
 
         <v-layout row wrap>
           <v-flex xs4 offset-xs1>
             <span  class="grey--text">部门名称：</span>
-            <span  >{{this.orderVo.deptName}}</span>
+            <span  >{{this.appVo.deptName}}</span>
           </v-flex>
           <v-flex xs4>
             <span  class="grey--text">部门编号： </span>
-            <span  >{{this.orderVo.deptCode}}</span>
+            <span  >{{this.appVo.deptCode}}</span>
           </v-flex>
         </v-layout>
 
         <v-layout row wrap>
           <v-flex xs10 offset-xs1>
             <span  class="grey--text">应用描述：</span>
-            <span>{{this.orderVo.description}}</span>
+            <span>{{this.appVo.description}}</span>
           </v-flex>
         </v-layout>
 
@@ -65,9 +65,10 @@
           <template slot="items" slot-scope="props" class="body-2">
             <tr>
               <td class="text-xs-left">{{ props.item.name }}</td>
-              <td class="text-xs-left">{{ props.item.type}}</td>
+              <td class="text-xs-left">{{ props.item.cmptType}}</td>
+              <td class="text-xs-left">{{ props.item.count}}</td>
+              <td class="text-xs-left">{{ props.item.config}}</td>
               <td class="text-xs-left">{{ props.item.deptName}}</td>
-              <td class="text-xs-left">{{ props.item.deptCode}}</td>
             </tr>
           </template>
         </v-data-table>
@@ -82,9 +83,9 @@
           <template slot="items" slot-scope="props" class="body-2">
             <tr>
               <td class="text-xs-left">{{ props.item.name }}</td>
-              <td class="text-xs-left">{{ props.item.type}}</td>
-              <td class="text-xs-left">{{ props.item.deptName}}</td>
-              <td class="text-xs-left">{{ props.item.deptCode}}</td>
+              <td class="text-xs-left">{{ props.item.dataType}}</td>
+              <td class="text-xs-left">{{ props.item.updateCycle}}</td>
+              <td class="text-xs-left">{{ props.item.sqdwName}}</td>
             </tr>
           </template>
         </v-data-table>
@@ -99,9 +100,8 @@
           <template slot="items" slot-scope="props" class="body-2">
             <tr>
               <td class="text-xs-left">{{ props.item.name }}</td>
-              <td class="text-xs-left">{{ props.item.type}}</td>
+              <td class="text-xs-left">{{ props.item.apiLevel}}</td>
               <td class="text-xs-left">{{ props.item.deptName}}</td>
-              <td class="text-xs-left">{{ props.item.deptCode}}</td>
             </tr>
           </template>
         </v-data-table>
@@ -118,14 +118,14 @@
       name: "AppDetail",
       data(){
         return{
-          orderId:this.$route.params.app_id,
-          orderVo:{
+          appId:this.$route.params.app_id,
+          appVo:{
             name:"",
             type:"",
             description:"",
             deptName:"",
             deptCode:"",
-            resourceDetail: {
+            resourceInfo: {
               resrcCmptList : [],
               resrcDataList: [],
               resrcApiList:[]
@@ -161,12 +161,12 @@
 
       methods:{
         fetchData(){
-          AppService.getAppDetail(this.orderId).then((res) => {
+          AppService.getAppDetail(this.appId).then((res) => {
             this.appVo = res.data;
-            if(this.orderVo.resourceDetail != null){
-              this.cmptItems = this.orderVo.resourceDetail.resrcCmptList;
-              this.dataItems = this.orderVo.resourceDetail.resrcDataList;
-              this.apiItems  = this.orderVo.resourceDetail.resrcApiList;
+            if(this.appVo.resourceInfo != null){
+              this.cmptItems = this.appVo.resourceInfo.resrcCmptList;
+              this.dataItems = this.appVo.resourceInfo.resrcDataList;
+              this.apiItems  = this.appVo.resourceInfo.resrcApiList;
             }
             console.log("appvo is " +appVo.name)
             console.log(appVo.name)
@@ -177,7 +177,7 @@
         },
 
         jumpToApplyPage(){
-          this.$router.push({name:'IsvAppResourceApply', params:{app_id:this.orderId}})
+          this.$router.push({name:'IsvAppResourceApply', params:{app_id:this.appId}})
         }
       },
 

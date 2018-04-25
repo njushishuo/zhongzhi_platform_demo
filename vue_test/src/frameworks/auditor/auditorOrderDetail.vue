@@ -98,6 +98,8 @@
               <td class="text-xs-left">{{ props.item.dataType}}</td>
               <td class="text-xs-left">{{ props.item.updateCycle}}</td>
               <td class="text-xs-left">{{ props.item.sqdwName}}</td>
+              <td v-if="props.item.approved" class="text-xs-left blue--text">通过</td>
+              <td v-if="!props.item.approved" class="text-xs-left red--text">未通过</td>
             </tr>
           </template>
         </v-data-table>
@@ -114,6 +116,8 @@
               <td class="text-xs-left">{{ props.item.name }}</td>
               <td class="text-xs-left">{{ props.item.apiLevel}}</td>
               <td class="text-xs-left">{{ props.item.deptName}}</td>
+              <td v-if="props.item.approved" class="text-xs-left blue--text">通过</td>
+              <td v-if="!props.item.approved" class="text-xs-left red--text">未通过</td>
             </tr>
           </template>
         </v-data-table>
