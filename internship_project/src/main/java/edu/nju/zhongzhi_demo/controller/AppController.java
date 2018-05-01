@@ -3,7 +3,8 @@ package edu.nju.zhongzhi_demo.controller;
 import edu.nju.zhongzhi_demo.entity.App;
 import edu.nju.zhongzhi_demo.model.para.AppPara;
 import edu.nju.zhongzhi_demo.model.vo.AppVo;
-import edu.nju.zhongzhi_demo.service.*;
+import edu.nju.zhongzhi_demo.service.AppService;
+import edu.nju.zhongzhi_demo.service.ResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

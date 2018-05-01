@@ -5,13 +5,9 @@ import edu.nju.zhongzhi_demo.dao.AppRepo;
 import edu.nju.zhongzhi_demo.dao.DepartmentRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRepo;
 import edu.nju.zhongzhi_demo.dao.WorkOrderRsrcRepo;
-import edu.nju.zhongzhi_demo.entity.User;
-import edu.nju.zhongzhi_demo.entity.WorkOrder;
-import edu.nju.zhongzhi_demo.entity.WorkOrderRsrc;
-import edu.nju.zhongzhi_demo.enums.ResourceStatus;
-import edu.nju.zhongzhi_demo.enums.Role;
-import edu.nju.zhongzhi_demo.enums.WorkOrderReviewResult;
-import edu.nju.zhongzhi_demo.enums.WorkOrderStatus;
+import edu.nju.zhongzhi_demo.entity.*;
+import edu.nju.zhongzhi_demo.enums.*;
+import edu.nju.zhongzhi_demo.model.para.WorkOrderPara;
 import edu.nju.zhongzhi_demo.model.vo.*;
 import edu.nju.zhongzhi_demo.util.DateHelper;
 import edu.nju.zhongzhi_demo.util.EnumTranslator;
@@ -39,6 +35,9 @@ public class WorkOrderService {
     ResourceService resourceService;
     @Autowired
     DepartmentRepo departmentRepo;
+
+    @Autowired
+    DepartmentService departmentService;
 
     public List<WorkOrderVo> getWorkOrderListByUserId(int userId){
         List<WorkOrder> workOrderList = this.workOrderRepo.getByApplicantId(userId);
@@ -268,4 +267,62 @@ public class WorkOrderService {
 
     }
 
+    public void createOrder(WorkOrderPara workOrderPara) {
+        if(workOrderPara.appId == null){
+            throw new RuntimeException(Config.PARA_ERROR_APPID_IS_NULL);
+        }
+
+        if(workOrderPara.userId == null){
+            throw new RuntimeException(Config.PARA_ERROR_USERID_IS_NULL);
+        }
+
+        WorkOrder workOrder = new WorkOrder();
+        workOrder.setAppId(workOrderPara.appId);
+        workOrder.setApplicantId(workOrderPara.userId);
+        workOrder.setStatus(WorkOrderStatus.wait_review);
+        workOrder = workOrderRepo.saveAndFlush(workOrder);
+
+        List<WorkOrderRsrc> result = new ArrayList<>();
+
+        if(workOrderPara.cmptList != null && !workOrderPara.cmptList.isEmpty()){
+            for(ResrcCmpt resrcCmpt: workOrderPara.cmptList){
+                int auditDeptId = this.departmentService.getAuditDeptIdForCmptRsrc(resrcCmpt.getDeptId());
+                WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
+                workOrderRsrc.setAppId(workOrderPara.appId);
+                workOrderRsrc.setWorkOrderId(workOrder.getId());
+                workOrderRsrc.setResrcId(resrcCmpt.getId());
+                workOrderRsrc.setResrcType(ResourceType.compute);
+                workOrderRsrc.setReviewDeptId(auditDeptId);
+                result.add(workOrderRsrc);
+            }
+        }
+
+        if(workOrderPara.dataList !=null && !workOrderPara.dataList.isEmpty()){
+            for(ResrcData resrcData: workOrderPara.dataList){
+                int auditDeptId = this.departmentService.getAuditDeptIdForDataRsrc(resrcData.getDeptId());
+                WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
+                workOrderRsrc.setAppId(workOrderPara.appId);
+                workOrderRsrc.setWorkOrderId(workOrder.getId());
+                workOrderRsrc.setResrcId(resrcData.getId());
+                workOrderRsrc.setResrcType(ResourceType.data);
+                workOrderRsrc.setReviewDeptId(auditDeptId);
+                result.add(workOrderRsrc);
+            }
+        }
+
+        if(workOrderPara.apiList !=null && !workOrderPara.apiList.isEmpty()){
+            for(ResrcApi resrcApi: workOrderPara.apiList){
+                int auditDeptId = this.departmentService.getAuditDeptIdForApiRsrc(resrcApi.getDeptId());
+                WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
+                workOrderRsrc.setAppId(workOrderPara.appId);
+                workOrderRsrc.setWorkOrderId(workOrder.getId());
+                workOrderRsrc.setResrcId(resrcApi.getId());
+                workOrderRsrc.setResrcType(ResourceType.api);
+                workOrderRsrc.setReviewDeptId(auditDeptId);
+                result.add(workOrderRsrc);
+            }
+        }
+
+        this.workOrderRsrcRepo.saveAll(result);
+    }
 }

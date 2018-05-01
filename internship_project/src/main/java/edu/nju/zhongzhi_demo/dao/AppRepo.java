@@ -1,7 +1,6 @@
 package edu.nju.zhongzhi_demo.dao;
 
 import edu.nju.zhongzhi_demo.entity.App;
-import edu.nju.zhongzhi_demo.model.vo.AppVo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

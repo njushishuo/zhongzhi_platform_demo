@@ -1,7 +1,6 @@
 package edu.nju.zhongzhi_demo.model.vo;
 
 import edu.nju.zhongzhi_demo.entity.User;
-import edu.nju.zhongzhi_demo.enums.Role;
 
 public class UserVo {
     public int id;
