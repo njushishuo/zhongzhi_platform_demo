@@ -66,7 +66,7 @@ public class ResourceService {
 
 
     /**
-     * 获取某个工单的资源信息
+     * 开发人员获取某个工单的资源信息
      * @param workOrderId
      * @return
      */
@@ -75,6 +75,12 @@ public class ResourceService {
         return this.getResourceDetailByWorList(workOrderRsrcList);
     }
 
+    /**
+     * 审核人员获取某个工单的资源信息
+     * @param workOrderId
+     * @param role
+     * @return
+     */
     public ResourceDetail getResourceDetailByWorkOrderIdAndRole(int workOrderId , Role role){
         if(role == Role.cmpt_conductor){
             List<WorkOrderRsrc> workOrderRsrcList = this.workOrderRsrcRepo.findCmptRecordByWorkOrderId(workOrderId);

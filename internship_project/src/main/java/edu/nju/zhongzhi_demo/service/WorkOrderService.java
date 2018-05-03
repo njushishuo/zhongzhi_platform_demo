@@ -94,17 +94,8 @@ public class WorkOrderService {
             throw new RuntimeException("role error");
         }
 
-        if(workOrderIds != null && !workOrderIds.isEmpty()){
-            List<WorkOrder> workOrderList = this.workOrderRepo.getAllByIdIn(workOrderIds);
-            List<WorkOrderVo> result = new ArrayList<>();
-            for(WorkOrder workOrder : workOrderList){
-                WorkOrderVo vo = this.transform(workOrder);
-                result.add(vo);
-            }
-            return result;
-        }
+        return this.getWorkOrderVoListByIdList(workOrderIds);
 
-        return null;
     }
 
     public List<WorkOrderVo> getProcessedWorkOrdersByAuditDeptIdAndRole
@@ -118,6 +109,10 @@ public class WorkOrderService {
             throw new RuntimeException("role error");
         }
 
+        return this.getWorkOrderVoListByIdList(workOrderIds);
+    }
+
+    private List<WorkOrderVo> getWorkOrderVoListByIdList(List<Integer> workOrderIds){
         if(workOrderIds != null && !workOrderIds.isEmpty()){
             List<WorkOrder> workOrderList = this.workOrderRepo.getAllByIdIn(workOrderIds);
             List<WorkOrderVo> result = new ArrayList<>();
@@ -127,7 +122,6 @@ public class WorkOrderService {
             }
             return result;
         }
-
         return null;
     }
 
