@@ -306,7 +306,7 @@ public class WorkOrderService {
 
         if(workOrderPara.apiList !=null && !workOrderPara.apiList.isEmpty()){
             for(ResrcApi resrcApi: workOrderPara.apiList){
-                int auditDeptId = this.departmentService.getAuditDeptIdForApiRsrc(resrcApi.getDeptId());
+                int auditDeptId = this.departmentService.getAuditDeptIdForDataRsrc(resrcApi.getDeptId());
                 WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
                 workOrderRsrc.setAppId(workOrderPara.appId);
                 workOrderRsrc.setWorkOrderId(workOrder.getId());
