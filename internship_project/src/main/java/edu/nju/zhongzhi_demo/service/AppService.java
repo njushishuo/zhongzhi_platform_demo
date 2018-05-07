@@ -18,7 +18,7 @@ public class AppService {
     @Autowired
     AppRepo appRepo;
     @Autowired
-    DeptService deptService;
+    DepartmentService deptService;
     @Autowired
     AccountService accountService;
 

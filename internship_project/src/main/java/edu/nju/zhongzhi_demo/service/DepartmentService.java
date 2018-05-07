@@ -1,7 +1,9 @@
 package edu.nju.zhongzhi_demo.service;
 
 import edu.nju.zhongzhi_demo.dao.AccountRepo;
+import edu.nju.zhongzhi_demo.dao.DepartmentRepo;
 import edu.nju.zhongzhi_demo.dao.DeptRelationRepo;
+import edu.nju.zhongzhi_demo.entity.Department;
 import edu.nju.zhongzhi_demo.entity.User;
 import edu.nju.zhongzhi_demo.enums.Role;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,13 @@ public class DepartmentService {
     AccountRepo accountRepo;
     @Autowired
     DeptRelationRepo deptRelationRepo;
+    @Autowired
+    DepartmentRepo departmentRepo;
+
+
+    public Department getById(int id){
+        return this.departmentRepo.getOne(id);
+    }
 
     /**
      * 根据资源发布部门，确定计算资源的审核部门
