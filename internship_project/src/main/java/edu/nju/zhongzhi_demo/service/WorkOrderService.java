@@ -71,6 +71,11 @@ public class WorkOrderService {
         return result;
     }
 
+    /**
+     * 开发人员查看工单详情
+     * @param id
+     * @return
+     */
     public WorkOrderDetailVo getWorkOrderDetail(int id) {
         WorkOrder workOrder = this.workOrderRepo.getOne(id);
         WorkOrderVo workOrderVo = this.transform(workOrder);
@@ -125,7 +130,12 @@ public class WorkOrderService {
         return null;
     }
 
-
+    /**
+     * 审核人员查看工单详情
+     * @param auditor
+     * @param workOrder
+     * @return
+     */
     public WorkOrderDetailVo getWorkOrderDetailForAuditor(User auditor , WorkOrder workOrder){
 
         WorkOrderVo workOrderVo = this.transform(workOrder);
