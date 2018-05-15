@@ -285,18 +285,13 @@ public class WorkOrderService {
         workOrder.setApplicantId(workOrderPara.userId);
         workOrder.setStatus(WorkOrderStatus.wait_review);
         workOrder = workOrderRepo.saveAndFlush(workOrder);
-
         List<WorkOrderRsrc> result = new ArrayList<>();
 
         if(workOrderPara.cmptList != null && !workOrderPara.cmptList.isEmpty()){
             for(ResrcCmpt resrcCmpt: workOrderPara.cmptList){
                 int auditDeptId = this.departmentService.getAuditDeptIdForCmptRsrc(resrcCmpt.getDeptId());
-                WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
-                workOrderRsrc.setAppId(workOrderPara.appId);
-                workOrderRsrc.setWorkOrderId(workOrder.getId());
-                workOrderRsrc.setResrcId(resrcCmpt.getId());
-                workOrderRsrc.setResrcType(ResourceType.compute);
-                workOrderRsrc.setReviewDeptId(auditDeptId);
+                WorkOrderRsrc workOrderRsrc = this.createWorkOrderRsrc
+                        (workOrderPara.appId,workOrder.getId(),resrcCmpt.getId(),ResourceType.compute,auditDeptId);
                 result.add(workOrderRsrc);
             }
         }
@@ -304,12 +299,8 @@ public class WorkOrderService {
         if(workOrderPara.dataList !=null && !workOrderPara.dataList.isEmpty()){
             for(ResrcData resrcData: workOrderPara.dataList){
                 int auditDeptId = this.departmentService.getAuditDeptIdForDataRsrc(resrcData.getDeptId());
-                WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
-                workOrderRsrc.setAppId(workOrderPara.appId);
-                workOrderRsrc.setWorkOrderId(workOrder.getId());
-                workOrderRsrc.setResrcId(resrcData.getId());
-                workOrderRsrc.setResrcType(ResourceType.data);
-                workOrderRsrc.setReviewDeptId(auditDeptId);
+                WorkOrderRsrc workOrderRsrc = this.createWorkOrderRsrc
+                        (workOrderPara.appId,workOrder.getId(),resrcData.getId(),ResourceType.data,auditDeptId);
                 result.add(workOrderRsrc);
             }
         }
@@ -317,16 +308,21 @@ public class WorkOrderService {
         if(workOrderPara.apiList !=null && !workOrderPara.apiList.isEmpty()){
             for(ResrcApi resrcApi: workOrderPara.apiList){
                 int auditDeptId = this.departmentService.getAuditDeptIdForDataRsrc(resrcApi.getDeptId());
-                WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
-                workOrderRsrc.setAppId(workOrderPara.appId);
-                workOrderRsrc.setWorkOrderId(workOrder.getId());
-                workOrderRsrc.setResrcId(resrcApi.getId());
-                workOrderRsrc.setResrcType(ResourceType.api);
-                workOrderRsrc.setReviewDeptId(auditDeptId);
+                WorkOrderRsrc workOrderRsrc = this.createWorkOrderRsrc
+                        (workOrderPara.appId,workOrder.getId(),resrcApi.getId(),ResourceType.api,auditDeptId);
                 result.add(workOrderRsrc);
             }
         }
-
         this.workOrderRsrcRepo.saveAll(result);
+    }
+
+    private WorkOrderRsrc createWorkOrderRsrc(int appId, int orderId, int resrcId, ResourceType type, int auditDeptId){
+        WorkOrderRsrc workOrderRsrc = new WorkOrderRsrc();
+        workOrderRsrc.setAppId(appId);
+        workOrderRsrc.setWorkOrderId(orderId);
+        workOrderRsrc.setResrcId(resrcId);
+        workOrderRsrc.setResrcType(type);
+        workOrderRsrc.setReviewDeptId(auditDeptId);
+        return workOrderRsrc;
     }
 }

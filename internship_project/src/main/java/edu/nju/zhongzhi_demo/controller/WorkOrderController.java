@@ -72,7 +72,6 @@ public class WorkOrderController {
     }
 
     @PostMapping("/auditor/{userId}/review")
-    @Transactional
     public void reviewOrder(@PathVariable int userId , @RequestBody WorkOrderDetailVo detailVo){
 
         this.workOrderService.reviewOrder(userId , detailVo);
